@@ -10,9 +10,9 @@ const SEED_DATA = {
             verified: true,
             rating: 4.6,
             totalTransactions: 23,
-            joinedDate: "2024-01-15",
+            joinedDate: "2025-08-15",
             phone: "+91-9876543210",
-            avatar: "👨‍🌾"
+            avatar: "assets/images/Male_farmer_avatar_profile_3effb6e6.png"
         },
         {
             id: "u2", 
@@ -23,9 +23,9 @@ const SEED_DATA = {
             verified: false,
             rating: 4.2,
             totalTransactions: 15,
-            joinedDate: "2024-03-20",
+            joinedDate: "2025-08-20",
             phone: "+91-9876543211",
-            avatar: "👩‍🌾"
+            avatar: "assets/images/Female_farmer_avatar_profile_a2917358.png"
         },
         {
             id: "u3",
@@ -36,9 +36,9 @@ const SEED_DATA = {
             verified: true,
             rating: 4.8,
             totalTransactions: 31,
-            joinedDate: "2023-11-10",
+            joinedDate: "2025-07-10",
             phone: "+91-9876543212",
-            avatar: "👨‍🌾"
+            avatar: "assets/images/Male_farmer_avatar_profile_3effb6e6.png"
         },
         {
             id: "u4",
@@ -49,9 +49,9 @@ const SEED_DATA = {
             verified: true,
             rating: 4.5,
             totalTransactions: 19,
-            joinedDate: "2024-02-05",
+            joinedDate: "2025-08-05",
             phone: "+91-9876543213",
-            avatar: "👩‍🌾"
+            avatar: "assets/images/Female_farmer_avatar_profile_a2917358.png"
         },
         {
             id: "c1",
@@ -63,7 +63,7 @@ const SEED_DATA = {
             rating: 4.9,
             specialization: "Heavy Equipment",
             phone: "+91-9876543214",
-            avatar: "🛡️"
+            avatar: "assets/images/Caretaker_service_agent_avatar_cc93feff.png"
         },
         {
             id: "c2",
@@ -75,7 +75,7 @@ const SEED_DATA = {
             rating: 4.7,
             specialization: "Tools & Equipment",
             phone: "+91-9876543215",
-            avatar: "🛡️"
+            avatar: "assets/images/Caretaker_service_agent_avatar_cc93feff.png"
         },
         {
             id: "admin1",
@@ -84,7 +84,7 @@ const SEED_DATA = {
             village: "Platform",
             district: "Punjab", 
             verified: true,
-            avatar: "⚙️"
+            avatar: "assets/images/Admin_manager_avatar_profile_656d34c4.png"
         }
     ],
     
@@ -251,15 +251,49 @@ const SEED_DATA = {
             renter: "u2",
             owner: "u1", 
             caretaker: "c1",
-            start_date: "2024-12-10",
-            end_date: "2024-12-12",
+            start_date: "2025-09-08",
+            end_date: "2025-09-10",
             status: "active",
             item_fee: 5000,
             protection_fee: 500,
             caretaker_fee: 300,
             platform_commission: 290,
             total_amount: 6090,
-            created_date: "2024-12-09",
+            created_date: "2025-09-07",
+            payment_status: "paid"
+        },
+        {
+            id: "t2",
+            item_id: "i3",
+            renter: "u4",
+            owner: "u1",
+            caretaker: null,
+            start_date: "2025-09-05",
+            end_date: "2025-09-06",
+            status: "completed",
+            item_fee: 2200,
+            protection_fee: 0,
+            caretaker_fee: 0,
+            platform_commission: 110,
+            total_amount: 2310,
+            created_date: "2025-09-04",
+            payment_status: "paid"
+        },
+        {
+            id: "t3",
+            item_id: "i7",
+            renter: "u2",
+            owner: "u4",
+            caretaker: null,
+            start_date: "2025-09-06",
+            end_date: "2025-09-06",
+            status: "completed",
+            item_fee: 1600,
+            protection_fee: 0,
+            caretaker_fee: 0,
+            platform_commission: 80,
+            total_amount: 1680,
+            created_date: "2025-09-05",
             payment_status: "paid"
         }
     ],
@@ -271,7 +305,7 @@ const SEED_DATA = {
             sender: "u2",
             receiver: "u1",
             message: "Hi Ram Singh ji, is the tractor available for tomorrow?",
-            timestamp: "2024-12-09T10:30:00Z",
+            timestamp: "2025-09-07T10:30:00Z",
             type: "text"
         },
         {
@@ -315,14 +349,19 @@ function initializeSeedData() {
         }
     });
     
-    // Set default current user if not exists
+    // Don't set default logged in user anymore - let users register/login properly
     if (!localStorage.getItem('currentUser')) {
-        localStorage.setItem('currentUser', JSON.stringify(SEED_DATA.users[1])); // Default to renter
+        localStorage.setItem('currentUser', 'null');
     }
     
     if (!localStorage.getItem('currentRole')) {
-        localStorage.setItem('currentRole', 'renter');
+        localStorage.setItem('currentRole', '');
     }
+}
+
+// Call initialization when script loads
+if (typeof window !== 'undefined') {
+    initializeSeedData();
 }
 
 // Data access functions with simulated API latency
@@ -458,6 +497,19 @@ class MockAPI {
         messages.push(newMessage);
         localStorage.setItem('messages', JSON.stringify(messages));
         return newMessage;
+    }
+    
+    static async getDirectMessages(senderId, receiverId, itemId) {
+        await this.delay();
+        let messages = JSON.parse(localStorage.getItem('messages') || '[]');
+        
+        // Filter messages for the specific conversation
+        messages = messages.filter(m => 
+            (m.sender === senderId && m.receiver === receiverId) || 
+            (m.sender === receiverId && m.receiver === senderId)
+        );
+        
+        return messages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
     }
     
     static async getPlatformStats() {

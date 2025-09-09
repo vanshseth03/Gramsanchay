@@ -6,6 +6,7 @@ let isLoggedIn = false;
 let currentPage = 'home';
 let selectedItem = null;
 let currentTransaction = null;
+let currentChatContact = null;
 let chatPollingInterval = null;
 
 // Application initialization
@@ -15,6 +16,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 async function initializeApp() {
     try {
+        // Force initialize seed data first
+        if (typeof initializeSeedData === 'function') {
+            initializeSeedData();
+        }
+        
         // Load current user session
         const savedUser = localStorage.getItem('currentUser');
         if (savedUser && savedUser !== 'null') {
@@ -96,6 +102,9 @@ async function loadPageContent(pageId) {
             break;
         case 'profile':
             await loadProfile();
+            break;
+        case 'item-detail':
+            // Item detail content is already loaded by showItemDetail function
             break;
         case 'admin':
             if (currentUser && currentUser.role === 'admin') {
@@ -205,7 +214,7 @@ async function handleRegister(event) {
             rating: 0,
             totalTransactions: 0,
             joinedDate: new Date().toISOString().split('T')[0],
-            avatar: role === 'caretaker' ? '🛡️' : (role === 'owner' ? '👨‍🌾' : '👩‍🌾')
+            avatar: role === 'caretaker' ? 'assets/images/Caretaker_service_agent_avatar_cc93feff.png' : (role === 'owner' ? 'assets/images/Male_farmer_avatar_profile_3effb6e6.png' : 'assets/images/Female_farmer_avatar_profile_a2917358.png')
         };
         
         // Add to users list
@@ -260,7 +269,7 @@ function updateAuthUI() {
         registerBtn.style.display = 'none';
         logoutBtn.style.display = 'inline-block';
         userInfo.style.display = 'block';
-        userDisplay.textContent = `${currentUser.avatar} ${currentUser.name} (${currentUser.role.charAt(0).toUpperCase() + currentUser.role.slice(1)})`;
+        userDisplay.innerHTML = `<img src="${currentUser.avatar}" alt="Avatar" style="width: 24px; height: 24px; border-radius: 50%; vertical-align: middle; margin-right: 8px;"> ${currentUser.name} (${currentUser.role.charAt(0).toUpperCase() + currentUser.role.slice(1)})`;
         
         // Show/hide admin navigation based on user role
         updateAdminNavigation();
@@ -369,13 +378,13 @@ function formatPrice(item) {
 
 function getCategoryIcon(category) {
     const icons = {
-        'Tools': '🚜',
-        'Inputs': '🌱', 
-        'Produce': '🥕',
-        'Waste': '♻️',
-        'Manpower': '👷'
+        'Tools': '<img src="assets/images/Agricultural_tractor_tools_icon_79cbf122.png" alt="Tools" class="category-icon">',
+        'Inputs': '<img src="assets/images/Agricultural_inputs_seedling_icon_02381cf7.png" alt="Inputs" class="category-icon">', 
+        'Produce': '<img src="assets/images/Farm_produce_vegetables_icon_6e7d25e1.png" alt="Produce" class="category-icon">',
+        'Waste': '<img src="assets/images/Agricultural_waste_recycling_icon_47728bd8.png" alt="Waste" class="category-icon">',
+        'Manpower': '<img src="assets/images/Farm_worker_manpower_icon_8a9f5228.png" alt="Manpower" class="category-icon">'
     };
-    return icons[category] || '📦';
+    return icons[category] || '<img src="assets/images/Agricultural_tractor_tools_icon_79cbf122.png" alt="Item" class="category-icon">';
 }
 
 // Filter items
@@ -390,6 +399,7 @@ async function showItemDetail(itemId) {
         selectedItem = await MockAPI.getItem(itemId);
         
         if (!selectedItem) {
+            hideLoading();
             showError('Item not found');
             return;
         }
@@ -430,7 +440,7 @@ function displayItemDetail() {
                     <div class="item-meta">
                         <p><strong>Condition:</strong> ${selectedItem.condition}</p>
                         <p><strong>Location:</strong> ${selectedItem.location}</p>
-                        <p><strong>Owner:</strong> ${owner ? `${owner.avatar} ${owner.name}` : 'Unknown'} 
+                        <p><strong>Owner:</strong> ${owner ? `<img src="${owner.avatar}" alt="Owner" style="width: 20px; height: 20px; border-radius: 50%; vertical-align: middle; margin-right: 4px;"> ${owner.name}` : 'Unknown'} 
                            ${owner && owner.verified ? '✅ Verified' : ''}</p>
                         <p><strong>Quantity Available:</strong> ${selectedItem.quantity}</p>
                     </div>
@@ -477,7 +487,7 @@ function displayItemDetail() {
                     </div>
                 </div>
                 
-                ${selectedItem.availability === 'available' && currentRole !== 'admin' && selectedItem.owner !== currentUser?.id ? `
+                ${selectedItem.availability === 'available' && currentUser?.role !== 'admin' && selectedItem.owner !== currentUser?.id ? `
                     <div class="booking-section">
                         ${selectedItem.high_value ? `
                             <div class="caretaker-option">
@@ -951,13 +961,13 @@ function displayOrders(transactions) {
                 
                 <div class="order-details">
                     <p><strong>Transaction ID:</strong> ${transaction.id}</p>
-                    <p><strong>${currentRole === 'owner' ? 'Renter' : 'Owner'}:</strong> 
-                       ${currentRole === 'owner' ? 
-                         (renter ? `${renter.avatar} ${renter.name}` : 'Unknown') : 
-                         (owner ? `${owner.avatar} ${owner.name}` : 'Unknown')
+                    <p><strong>${currentUser?.role === 'owner' ? 'Renter' : 'Owner'}:</strong> 
+                       ${currentUser?.role === 'owner' ? 
+                         (renter ? `<img src="${renter.avatar}" alt="Renter" style="width: 20px; height: 20px; border-radius: 50%; vertical-align: middle; margin-right: 4px;"> ${renter.name}` : 'Unknown') : 
+                         (owner ? `<img src="${owner.avatar}" alt="Owner" style="width: 20px; height: 20px; border-radius: 50%; vertical-align: middle; margin-right: 4px;"> ${owner.name}` : 'Unknown')
                        }
                     </p>
-                    ${caretaker ? `<p><strong>Caretaker:</strong> ${caretaker.avatar} ${caretaker.name}</p>` : ''}
+                    ${caretaker ? `<p><strong>Caretaker:</strong> <img src="${caretaker.avatar}" alt="Caretaker" style="width: 20px; height: 20px; border-radius: 50%; vertical-align: middle; margin-right: 4px;"> ${caretaker.name}</p>` : ''}
                     <p><strong>Amount:</strong> ₹${transaction.total_amount}</p>
                     <p><strong>Start Date:</strong> ${transaction.start_date}</p>
                     <p><strong>End Date:</strong> ${transaction.end_date}</p>
@@ -965,20 +975,20 @@ function displayOrders(transactions) {
                 </div>
                 
                 <div class="order-actions">
-                    <button class="btn btn-secondary" onclick="startChat('${transaction.item_id}', '${currentRole === 'owner' ? transaction.renter : transaction.owner}', '${transaction.id}')">
+                    <button class="btn btn-secondary" onclick="startChat('${transaction.item_id}', '${currentUser?.role === 'owner' ? transaction.renter : transaction.owner}', '${transaction.id}')">
                         💬 Chat
                     </button>
                     
-                    ${transaction.status === 'active' && currentRole === 'renter' ? `
+                    ${transaction.status === 'active' && currentUser?.role === 'renter' ? `
                         <button class="btn btn-warning" onclick="reportIssue('${transaction.id}')">Report Issue</button>
                         <button class="btn btn-success" onclick="completeTransaction('${transaction.id}')">Mark Complete</button>
                     ` : ''}
                     
-                    ${transaction.status === 'active' && currentRole === 'owner' ? `
+                    ${transaction.status === 'active' && currentUser?.role === 'owner' ? `
                         <button class="btn btn-success" onclick="confirmReturn('${transaction.id}')">Confirm Return</button>
                     ` : ''}
                     
-                    ${currentRole === 'caretaker' && transaction.caretaker === currentUser.id ? `
+                    ${currentUser?.role === 'caretaker' && transaction.caretaker === currentUser.id ? `
                         <button class="btn btn-primary" onclick="caretakerAction('${transaction.id}')">Caretaker Actions</button>
                     ` : ''}
                 </div>
@@ -1152,7 +1162,7 @@ function displayChatList(transactions) {
             <div class="chat-item ${currentTransaction?.id === transaction.id ? 'active' : ''}" 
                  onclick="selectChat('${transaction.id}')">
                 <h4>${item ? item.title : 'Unknown Item'}</h4>
-                <p>${otherUser ? `${otherUser.avatar} ${otherUser.name}` : 'Unknown User'}</p>
+                <p>${otherUser ? `<img src="${otherUser.avatar}" alt="Avatar" style="width: 20px; height: 20px; border-radius: 50%; vertical-align: middle; margin-right: 4px;"> ${otherUser.name}` : 'Unknown User'}</p>
                 <small>Transaction: ${transaction.id}</small>
             </div>
         `;
@@ -1272,10 +1282,30 @@ function handleChatKeypress(event) {
 async function startChat(itemId, ownerId, transactionId = null) {
     try {
         if (!transactionId) {
-            // Create a new chat context - in a real app, this might create a conversation
-            // For now, we'll just switch to chat page
-            await showPage('chat');
-            return;
+            // Create a direct message context with the item owner
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const owner = users.find(u => u.id === ownerId);
+            
+            if (owner) {
+                // Set up direct message context
+                currentChatContact = {
+                    id: ownerId,
+                    name: owner.name,
+                    avatar: owner.avatar,
+                    itemId: itemId
+                };
+                
+                await showPage('chat');
+                await loadDirectMessages(ownerId, itemId);
+                
+                // Auto-focus the message input
+                setTimeout(() => {
+                    const input = document.getElementById('messageInput');
+                    if (input) input.focus();
+                }, 100);
+                
+                return;
+            }
         }
         
         currentTransaction = { id: transactionId };
@@ -1285,6 +1315,62 @@ async function startChat(itemId, ownerId, transactionId = null) {
         console.error('Error starting chat:', error);
         showError('Failed to start chat');
     }
+}
+
+// Load direct messages for item inquiry
+async function loadDirectMessages(ownerId, itemId) {
+    try {
+        const chatContainer = document.getElementById('chatMessages');
+        const chatHeader = document.querySelector('.chat-header h3');
+        
+        if (chatHeader && currentChatContact) {
+            chatHeader.textContent = `Chat with ${currentChatContact.name}`;
+        }
+        
+        // For now, show a starter message or load existing messages
+        if (chatContainer) {
+            chatContainer.innerHTML = `
+                <div class="chat-message system-message">
+                    <div class="message-content">
+                        <p>You are now chatting with ${currentChatContact.name} about their item.</p>
+                        <p>Feel free to ask questions about availability, condition, or any other details!</p>
+                    </div>
+                </div>
+            `;
+            
+            // Auto-scroll to bottom
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+        
+        // Load any existing messages for this conversation
+        const messages = await MockAPI.getDirectMessages(currentUser.id, ownerId, itemId);
+        if (messages && messages.length > 0) {
+            displayDirectMessages(messages);
+        }
+        
+    } catch (error) {
+        console.error('Error loading direct messages:', error);
+    }
+}
+
+function displayDirectMessages(messages) {
+    const chatContainer = document.getElementById('chatMessages');
+    if (!chatContainer) return;
+    
+    const messagesHTML = messages.map(msg => {
+        const isCurrentUser = msg.sender === currentUser.id;
+        return `
+            <div class="chat-message ${isCurrentUser ? 'sent' : 'received'}">
+                <div class="message-content">
+                    <p>${msg.message}</p>
+                    <small class="message-time">${new Date(msg.timestamp).toLocaleTimeString()}</small>
+                </div>
+            </div>
+        `;
+    }).join('');
+    
+    chatContainer.innerHTML += messagesHTML;
+    chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
 // Chat polling for real-time updates
@@ -1329,20 +1415,41 @@ function displayProfile(user, transactions) {
     if (!container) return;
     
     const completedTransactions = transactions.filter(t => t.status === 'completed').length;
+    const activeTransactions = transactions.filter(t => t.status === 'active').length;
     const totalEarnings = transactions
         .filter(t => t.status === 'completed' && currentUser.role === 'owner')
         .reduce((sum, t) => sum + (t.item_fee || 0), 0);
     
+    // Calculate days since joining
+    const joinedDate = new Date(user.joinedDate);
+    const today = new Date();
+    const daysSinceJoined = Math.floor((today - joinedDate) / (1000 * 60 * 60 * 24));
+    
+    // Get recent activity
+    const recentTransactions = transactions
+        .sort((a, b) => new Date(b.created_date) - new Date(a.created_date))
+        .slice(0, 3);
+    
+    // Format join date nicely
+    const joinedDateFormatted = joinedDate.toLocaleDateString('en-IN', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    });
+    
     container.innerHTML = `
         <div class="profile-header">
-            <div class="profile-avatar">${user.avatar}</div>
+            <div class="profile-avatar"><img src="${user.avatar}" alt="Profile Avatar" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;"></div>
             <h2>${user.name}</h2>
             <p>${user.village}, ${user.district}</p>
             <div class="verification-status">
                 ${user.verified ? '✅ Verified User' : '⚠️ Not Verified'}
             </div>
             <div class="rating">
-                ${'⭐'.repeat(Math.floor(user.rating || 0))} ${user.rating || 0}/5
+                ${'⭐'.repeat(Math.floor(user.rating || 0))} ${user.rating || 0}/5 • ${user.totalTransactions || 0} reviews
+            </div>
+            <div class="role-badge role-${user.role}">
+                ${user.role === 'owner' ? '🏠 Owner/Lister' : user.role === 'renter' ? '🛒 Renter/Buyer' : '🛡️ Caretaker'}
             </div>
         </div>
         
@@ -1350,22 +1457,52 @@ function displayProfile(user, transactions) {
             <div class="stat-card">
                 <h3>Total Transactions</h3>
                 <div class="stat-value">${user.totalTransactions || 0}</div>
+                <div class="stat-subtitle">All time</div>
             </div>
             <div class="stat-card">
                 <h3>Completed Orders</h3>
                 <div class="stat-value">${completedTransactions}</div>
+                <div class="stat-subtitle">Success rate: ${user.totalTransactions ? Math.round((completedTransactions / user.totalTransactions) * 100) : 0}%</div>
+            </div>
+            <div class="stat-card">
+                <h3>Active Orders</h3>
+                <div class="stat-value">${activeTransactions}</div>
+                <div class="stat-subtitle">Currently running</div>
             </div>
             <div class="stat-card">
                 <h3>Member Since</h3>
-                <div class="stat-value">${user.joinedDate || 'Unknown'}</div>
+                <div class="stat-value">${joinedDateFormatted}</div>
+                <div class="stat-subtitle">${daysSinceJoined} days ago</div>
             </div>
             ${currentUser.role === 'owner' ? `
                 <div class="stat-card">
                     <h3>Total Earnings</h3>
-                    <div class="stat-value">₹${totalEarnings}</div>
+                    <div class="stat-value">₹${totalEarnings.toLocaleString()}</div>
+                    <div class="stat-subtitle">From completed orders</div>
                 </div>
             ` : ''}
         </div>
+        
+        ${recentTransactions.length > 0 ? `
+            <div class="recent-activity">
+                <h3>Recent Activity</h3>
+                <div class="activity-list">
+                    ${recentTransactions.map(transaction => {
+                        const createdDate = new Date(transaction.created_date);
+                        const daysAgo = Math.floor((today - createdDate) / (1000 * 60 * 60 * 24));
+                        return `
+                            <div class="activity-item">
+                                <div class="activity-icon">${transaction.status === 'completed' ? '✅' : transaction.status === 'active' ? '🔄' : '📋'}</div>
+                                <div class="activity-details">
+                                    <div class="activity-title">Order ${transaction.status}</div>
+                                    <div class="activity-subtitle">₹${transaction.total_amount} • ${daysAgo === 0 ? 'Today' : daysAgo === 1 ? 'Yesterday' : daysAgo + ' days ago'}</div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            </div>
+        ` : ''}
         
         <div class="profile-actions">
             <button class="btn btn-primary" onclick="showEditProfile()">Edit Profile</button>
@@ -1376,7 +1513,7 @@ function displayProfile(user, transactions) {
 
 // Admin dashboard functions
 async function loadAdminDashboard() {
-    if (currentRole !== 'admin') {
+    if (currentUser?.role !== 'admin') {
         document.getElementById('page-admin').innerHTML = '<p>Access denied. Admin role required.</p>';
         return;
     }
@@ -1631,7 +1768,7 @@ async function handleEditProfile(event) {
         // Handle role change
         if (currentUser.role !== role) {
             currentUser.role = role;
-            currentUser.avatar = role === 'caretaker' ? '🛡️' : (role === 'owner' ? '👨‍🌾' : '👩‍🌾');
+            currentUser.avatar = role === 'caretaker' ? 'assets/images/Caretaker_service_agent_avatar_cc93feff.png' : (role === 'owner' ? 'assets/images/Male_farmer_avatar_profile_3effb6e6.png' : 'assets/images/Female_farmer_avatar_profile_a2917358.png');
         }
         
         // Update in localStorage
