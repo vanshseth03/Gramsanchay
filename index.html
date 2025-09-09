@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ग्रामसंचय - Rural Peer-to-Peer Exchange Platform">
+    <title>ग्रामसंचय - Rural Exchange Platform</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2d5a27">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232d5a27'%3E%3Cpath d='M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z'/%3E%3C/svg%3E" alt="ग्रामसंचय" class="logo">
+                <h1>ग्रामसंचय</h1>
+            </div>
+            
+            <div class="nav-menu">
+                <a href="#" onclick="showPage('home')" class="nav-link active" id="nav-home">Home</a>
+                <a href="#" onclick="showPage('marketplace')" class="nav-link" id="nav-marketplace">Marketplace</a>
+                <a href="#" onclick="showPage('orders')" class="nav-link" id="nav-orders">My Orders</a>
+                <a href="#" onclick="showPage('chat')" class="nav-link" id="nav-chat">Messages</a>
+                <a href="#" onclick="showPage('profile')" class="nav-link" id="nav-profile">Profile</a>
+            </div>
+
+            <!-- User Actions -->
+            <div class="user-actions">
+                <button class="btn btn-outline" onclick="showLogin()" id="loginBtn">Login</button>
+                <button class="btn btn-primary" onclick="showRegister()" id="registerBtn">Register</button>
+                <button class="btn btn-outline" onclick="logout()" id="logoutBtn" style="display: none;">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Current User Info -->
+    <div class="user-info" id="currentUserInfo" style="display: none;">
+        <span id="currentUserDisplay">Welcome, Guest</span>
+    </div>
+
+    <!-- Main Content Container -->
+    <main class="main-content">
+        <!-- Home Page -->
+        <div id="page-home" class="page active">
+            <section class="hero">
+                <div class="hero-content">
+                    <h2>Trusted Village Exchange Platform</h2>
+                    <p>Exchange tools, manpower, inputs, produce, and farm waste with protection and caretaker services</p>
+                    <div class="hero-actions">
+                        <button class="btn btn-primary" onclick="showPage('marketplace')">Browse Marketplace</button>
+                        <button class="btn btn-secondary" onclick="showPage('list-item')">List Item</button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="features">
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🚜</div>
+                        <h3>Tools & Equipment</h3>
+                        <p>Rent tractors, harvesters, and farming equipment from verified neighbors</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🌱</div>
+                        <h3>Seeds & Inputs</h3>
+                        <p>Find quality seeds, fertilizers, and pesticides at fair prices</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🥕</div>
+                        <h3>Fresh Produce</h3>
+                        <p>Buy and sell farm-fresh vegetables and grains directly</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">♻️</div>
+                        <h3>Waste-to-Value</h3>
+                        <p>Convert stubble and waste into valuable resources</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">👷</div>
+                        <h3>Skilled Labor</h3>
+                        <p>Find experienced workers for seasonal farming needs</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🛡️</div>
+                        <h3>Protected Transactions</h3>
+                        <p>Built-in protection and caretaker services for high-value items</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Marketplace Page -->
+        <div id="page-marketplace" class="page">
+            <div class="page-header">
+                <h2>Marketplace</h2>
+                <button class="btn btn-primary" onclick="showPage('list-item')">+ List Item</button>
+            </div>
+
+            <div class="marketplace-filters">
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="Search items..." onkeyup="filterItems()">
+                    <button class="search-btn" onclick="filterItems()">🔍</button>
+                </div>
+
+                <div class="filter-controls">
+                    <select id="categoryFilter" onchange="filterItems()">
+                        <option value="">All Categories</option>
+                        <option value="Tools">Tools</option>
+                        <option value="Inputs">Inputs</option>
+                        <option value="Produce">Produce</option>
+                        <option value="Waste">Waste</option>
+                        <option value="Manpower">Manpower</option>
+                    </select>
+
+                    <select id="sortFilter" onchange="filterItems()">
+                        <option value="newest">Newest First</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
+                        <option value="distance">By Distance</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="marketplace-grid" id="marketplaceGrid">
+                <!-- Items will be populated here -->
+            </div>
+        </div>
+
+        <!-- List Item Page -->
+        <div id="page-list-item" class="page">
+            <div class="page-header">
+                <h2>List Your Item</h2>
+            </div>
+
+            <form class="list-item-form" id="listItemForm" onsubmit="submitListing(event)">
+                <div class="form-group">
+                    <label for="itemTitle">Title *</label>
+                    <input type="text" id="itemTitle" required placeholder="e.g., Mahindra Tractor 2020">
+                </div>
+
+                <div class="form-group">
+                    <label for="itemCategory">Category *</label>
+                    <select id="itemCategory" required onchange="updateCategoryFields()">
+                        <option value="">Select Category</option>
+                        <option value="Tools">Tools & Equipment</option>
+                        <option value="Inputs">Seeds & Inputs</option>
+                        <option value="Produce">Produce</option>
+                        <option value="Waste">Farm Waste</option>
+                        <option value="Manpower">Skilled Labor</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="itemDescription">Description *</label>
+                    <textarea id="itemDescription" required placeholder="Describe your item, condition, and any special requirements"></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="itemQuantity">Quantity</label>
+                        <input type="number" id="itemQuantity" min="1" value="1">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="priceType">Price Type</label>
+                        <select id="priceType">
+                            <option value="per-hour">Per Hour</option>
+                            <option value="per-day">Per Day</option>
+                            <option value="per-kg">Per KG</option>
+                            <option value="fixed">Fixed Price</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="itemPrice">Price (₹) *</label>
+                        <input type="number" id="itemPrice" required min="1" placeholder="Enter price">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="protectionRequired">
+                        Protection Required (recommended for high-value items)
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label for="itemImages">Images</label>
+                    <input type="file" id="itemImages" multiple accept="image/*" onchange="previewImages(event)">
+                    <div class="image-preview" id="imagePreview"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="itemLocation">Pickup Location *</label>
+                    <input type="text" id="itemLocation" required placeholder="Village, District">
+                </div>
+
+                <div class="form-group">
+                    <label for="itemTags">Tags (comma-separated)</label>
+                    <input type="text" id="itemTags" placeholder="organic, verified, premium">
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">List Item</button>
+            </form>
+        </div>
+
+        <!-- Item Detail Page -->
+        <div id="page-item-detail" class="page">
+            <div id="itemDetailContent">
+                <!-- Content will be populated here -->
+            </div>
+        </div>
+
+        <!-- Orders Page -->
+        <div id="page-orders" class="page">
+            <div class="page-header">
+                <h2>My Orders</h2>
+            </div>
+
+            <div class="orders-tabs">
+                <button class="tab-btn active" onclick="showOrderTab('active')">Active</button>
+                <button class="tab-btn" onclick="showOrderTab('completed')">Completed</button>
+                <button class="tab-btn" onclick="showOrderTab('pending')">Pending</button>
+            </div>
+
+            <div class="orders-list" id="ordersList">
+                <!-- Orders will be populated here -->
+            </div>
+        </div>
+
+        <!-- Chat Page -->
+        <div id="page-chat" class="page">
+            <div class="chat-container">
+                <div class="chat-sidebar">
+                    <h3>Conversations</h3>
+                    <div class="chat-list" id="chatList">
+                        <!-- Chat list will be populated here -->
+                    </div>
+                </div>
+
+                <div class="chat-main">
+                    <div class="chat-header" id="chatHeader">
+                        Select a conversation
+                    </div>
+                    <div class="chat-messages" id="chatMessages">
+                        <!-- Messages will be populated here -->
+                    </div>
+                    <div class="chat-input" id="chatInputContainer" style="display: none;">
+                        <input type="text" id="chatInput" placeholder="Type a message..." onkeypress="handleChatKeypress(event)">
+                        <button onclick="sendMessage()">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Page -->
+        <div id="page-profile" class="page">
+            <div class="profile-content" id="profileContent">
+                <!-- Profile will be populated here -->
+            </div>
+        </div>
+        
+        <!-- Login Page -->
+        <div id="page-login" class="page">
+            <div class="auth-container">
+                <div class="auth-form">
+                    <h2>Login to ग्रामसंचय</h2>
+                    <form id="loginForm" onsubmit="handleLogin(event)">
+                        <div class="form-group">
+                            <label for="loginPhone">Phone Number *</label>
+                            <input type="tel" id="loginPhone" required placeholder="+91-XXXXXXXXXX">
+                        </div>
+                        <div class="form-group">
+                            <label for="loginPassword">Password *</label>
+                            <input type="password" id="loginPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Login</button>
+                    </form>
+                    <p class="auth-switch">Don't have an account? <a href="#" onclick="showRegister()">Register here</a></p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Register Page -->
+        <div id="page-register" class="page">
+            <div class="auth-container">
+                <div class="auth-form">
+                    <h2>Join ग्रामसंचय</h2>
+                    <form id="registerForm" onsubmit="handleRegister(event)">
+                        <div class="form-group">
+                            <label for="registerName">Full Name *</label>
+                            <input type="text" id="registerName" required placeholder="Enter your full name">
+                        </div>
+                        <div class="form-group">
+                            <label for="registerPhone">Phone Number *</label>
+                            <input type="tel" id="registerPhone" required placeholder="+91-XXXXXXXXXX">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="registerVillage">Village *</label>
+                                <input type="text" id="registerVillage" required placeholder="Your village">
+                            </div>
+                            <div class="form-group">
+                                <label for="registerDistrict">District *</label>
+                                <input type="text" id="registerDistrict" required placeholder="Your district">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerRole">I want to *</label>
+                            <select id="registerRole" required>
+                                <option value="">Select your primary role</option>
+                                <option value="renter">Rent/Buy items from others</option>
+                                <option value="owner">List my items for rent/sale</option>
+                                <option value="caretaker">Provide caretaker services</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerPassword">Password *</label>
+                            <input type="password" id="registerPassword" required minlength="6">
+                        </div>
+                        <div class="form-group">
+                            <label for="registerConfirmPassword">Confirm Password *</label>
+                            <input type="password" id="registerConfirmPassword" required minlength="6">
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="termsAccept" required>
+                                I accept the terms and conditions
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+                    </form>
+                    <p class="auth-switch">Already have an account? <a href="#" onclick="showLogin()">Login here</a></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Page -->
+        <div id="page-admin" class="page">
+            <div class="admin-dashboard">
+                <div class="page-header">
+                    <h2>Admin Dashboard</h2>
+                </div>
+
+                <div class="admin-stats">
+                    <div class="stat-card">
+                        <h3>Total Transactions</h3>
+                        <div class="stat-value" id="totalTransactions">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Platform Revenue</h3>
+                        <div class="stat-value" id="platformRevenue">₹0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Active Items</h3>
+                        <div class="stat-value" id="activeItems">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Pending Disputes</h3>
+                        <div class="stat-value" id="pendingDisputes">0</div>
+                    </div>
+                </div>
+
+                <div class="admin-sections">
+                    <div class="admin-section">
+                        <h3>Recent Transactions</h3>
+                        <div class="transactions-list" id="recentTransactions">
+                            <!-- Transactions will be populated here -->
+                        </div>
+                    </div>
+
+                    <div class="admin-section">
+                        <h3>Disputes</h3>
+                        <div class="disputes-list" id="disputesList">
+                            <!-- Disputes will be populated here -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-actions">
+                    <button class="btn btn-secondary" onclick="exportData()">Export Data</button>
+                    <button class="btn btn-danger" onclick="resetData()">Reset Demo Data</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+        <div class="loading-spinner">Loading...</div>
+    </div>
+
+    <!-- Modal Container -->
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
+        <div class="modal" id="modalContent" onclick="event.stopPropagation()">
+            <!-- Modal content will be populated here -->
+        </div>
+    </div>
+
+    <script src="seed-data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+{
+    "name": "ग्रामसंचय - Rural Exchange Platform",
+    "short_name": "ग्रामसंचय",
+    "description": "Trusted village-level exchange for tools, manpower, inputs, produce, and farm waste",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#f8f9fa",
+    "theme_color": "#2d5a27",
+    "icons": [
+        {
+            "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' fill='%232d5a27'%3E%3Cpath d='M96 16l18.54 37.54L152 61.46l-30 29.24 7.08 41.28L96 106.62l-33.08 17.36L70 82.7 40 53.46l37.46-7.92L96 16z'/%3E%3C/svg%3E",
+            "sizes": "192x192",
+            "type": "image/svg+xml"
+        },
+        {
+            "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' fill='%232d5a27'%3E%3Cpath d='M256 43l49.44 100.12L412 161.23l-80 78.06 18.88 110.08L256 284.65l-94.88 49.72L180 224.29l-80-78.06 106.56-18.11L256 43z'/%3E%3C/svg%3E",
+            "sizes": "512x512",
+            "type": "image/svg+xml"
+        }
+    ],
+    "categories": ["agriculture", "marketplace", "social"],
+    "lang": "en",
+    "orientation": "portrait-primary"
+}
