@@ -182,6 +182,7 @@ async function handleRegister(event) {
         const phone = document.getElementById('registerPhone').value;
         const village = document.getElementById('registerVillage').value;
         const district = document.getElementById('registerDistrict').value;
+        const address = document.getElementById('registerAddress').value;
         const role = document.getElementById('registerRole').value;
         const password = document.getElementById('registerPassword').value;
         const confirmPassword = document.getElementById('registerConfirmPassword').value;
@@ -209,12 +210,13 @@ async function handleRegister(event) {
             phone: phone,
             village: village,
             district: district,
+            address: address || '',
             role: role,
             verified: false,
             rating: 0,
             totalTransactions: 0,
             joinedDate: new Date().toISOString().split('T')[0],
-            avatar: role === 'caretaker' ? 'assets/images/Caretaker_service_agent_avatar_cc93feff.png' : (role === 'owner' ? 'assets/images/Male_farmer_avatar_profile_3effb6e6.png' : 'assets/images/Female_farmer_avatar_profile_a2917358.png')
+            avatar: role === 'helper' ? 'assets/images/Caretaker_service_agent_avatar_cc93feff.png' : (role === 'owner' ? 'assets/images/Male_farmer_avatar_profile_3effb6e6.png' : 'assets/images/Female_farmer_avatar_profile_a2917358.png')
         };
         
         // Add to users list
@@ -355,8 +357,8 @@ function displayMarketplaceItems(items) {
                 <div class="item-price">₹${formatPrice(item)}</div>
                 <div class="item-location">📍 ${item.location}</div>
                 <div class="item-status">
-                    <span class="status-badge status-${item.availability}">${item.availability.charAt(0).toUpperCase() + item.availability.slice(1)}</span>
-                    ${item.protection_required ? '<span class="protection-badge">🛡️ Protected</span>' : ''}
+                    <span class="status-badge status-${item.availability}">${translate(item.availability + '_status')}</span>
+                    ${item.protection_required ? `<span class="protection-badge">🛡️ ${translate('protected_badge')}</span>` : ''}
                 </div>
             </div>
         </div>
@@ -438,21 +440,21 @@ function displayItemDetail() {
                     <div class="item-category">${selectedItem.category}</div>
                     
                     <div class="item-meta">
-                        <p><strong>Condition:</strong> ${selectedItem.condition}</p>
-                        <p><strong>Location:</strong> ${selectedItem.location}</p>
-                        <p><strong>Owner:</strong> ${owner ? `<img src="${owner.avatar}" alt="Owner" style="width: 20px; height: 20px; border-radius: 50%; vertical-align: middle; margin-right: 4px;"> ${owner.name}` : 'Unknown'} 
-                           ${owner && owner.verified ? '✅ Verified' : ''}</p>
-                        <p><strong>Quantity Available:</strong> ${selectedItem.quantity}</p>
+                        <p><strong>${translate('condition')}:</strong> ${selectedItem.condition}</p>
+                        <p><strong>${translate('location_label')}:</strong> ${selectedItem.location}</p>
+                        <p><strong>${translate('owner')}:</strong> ${owner ? `<img src="${owner.avatar}" alt="Owner" style="width: 20px; height: 20px; border-radius: 50%; vertical-align: middle; margin-right: 4px;"> ${owner.name}` : 'Unknown'} 
+                           ${owner && owner.verified ? `✅ ${translate('verified_user')}` : ''}</p>
+                        <p><strong>${translate('quantity_available')}:</strong> ${selectedItem.quantity}</p>
                     </div>
                     
                     <div class="item-description">
-                        <h3>Description</h3>
+                        <h3>${translate('description_label')}</h3>
                         <p>${selectedItem.description}</p>
                     </div>
                     
                     ${selectedItem.tags && selectedItem.tags.length > 0 ? `
                         <div class="item-tags">
-                            <h3>Tags</h3>
+                            <h3>${translate('tags_label')}</h3>
                             <div class="tags">
                                 ${selectedItem.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
                             </div>
@@ -463,27 +465,48 @@ function displayItemDetail() {
             
             <div class="item-detail-sidebar">
                 <div class="price-section">
-                    <h3>Price</h3>
+                    <h3>${translate('price')}</h3>
                     <div class="price-display">₹${formatPrice(selectedItem)}</div>
                 </div>
                 
                 <div class="price-calculator">
-                    <h4>Calculate Total</h4>
+                    <h4>${translate('calculate_total')}</h4>
                     <div class="calculator-inputs">
                         ${selectedItem.price_type === 'per-day' || selectedItem.price_type === 'per-hour' ? `
-                            <label for="rentalDuration">Duration:</label>
-                            <input type="number" id="rentalDuration" min="1" value="1" onchange="updatePriceCalculation()">
-                            <select id="durationType" onchange="updatePriceCalculation()">
-                                ${selectedItem.price_type === 'per-day' ? '<option value="day">Days</option>' : '<option value="hour">Hours</option>'}
-                            </select>
+                            <div class="rental-booking-form">
+                                <div class="form-group">
+                                    <label for="rentalStartDate">${translate('start_date')}:</label>
+                                    <input type="date" id="rentalStartDate" min="" onchange="updatePriceCalculation()" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="rentalDuration">${translate('duration')}:</label>
+                                    <input type="number" id="rentalDuration" min="1" value="1" onchange="updatePriceCalculation()">
+                                    <select id="durationType" onchange="updatePriceCalculation()">
+                                        ${selectedItem.price_type === 'per-day' ? '<option value="day">Days</option>' : '<option value="hour">Hours</option>'}
+                                    </select>
+                                </div>
+                            </div>
+                            <script>
+                                // Set minimum date to 3 days from now
+                                const minDate = new Date();
+                                minDate.setDate(minDate.getDate() + 3);
+                                document.getElementById('rentalStartDate').min = minDate.toISOString().split('T')[0];
+                                
+                                // Set max date based on item availability if available
+                                ${selectedItem.available_to ? `document.getElementById('rentalStartDate').max = '${selectedItem.available_to}';` : ''}
+                            </script>
                         ` : `
-                            <label for="quantity">Quantity:</label>
+                            <label for="quantity">${translate('quantity')}:</label>
                             <input type="number" id="quantity" min="1" max="${selectedItem.quantity}" value="1" onchange="updatePriceCalculation()">
                         `}
                     </div>
                     
                     <div class="price-breakdown" id="priceBreakdown">
                         <!-- Will be populated by updatePriceCalculation() -->
+                    </div>
+                    
+                    <div class="delivery-note">
+                        <p><strong>📍 Delivery Charges:</strong> We will add delivery charges based on distance and item weight. A revised bill will be sent soon.</p>
                     </div>
                 </div>
                 
@@ -493,13 +516,17 @@ function displayItemDetail() {
                             <div class="caretaker-option">
                                 <label>
                                     <input type="checkbox" id="includeCaretaker" onchange="updatePriceCalculation()">
-                                    Include Caretaker Service (Recommended for high-value items)
+                                    Include Helper Service (Recommended for high-value items)
                                 </label>
+                                <div class="high-value-note">
+                                    <p><strong>💰 High-Value Item (>₹1 Lakh):</strong></p>
+                                    <p>A dedicated helper will be assigned to take care of this item. The helper fee includes meal and staying arrangements and is already included in the rental amount.</p>
+                                </div>
                             </div>
                         ` : ''}
                         
                         <button class="btn btn-primary btn-block" onclick="initiateBooking()">
-                            ${selectedItem.category === 'Produce' || selectedItem.category === 'Inputs' ? 'Buy Now' : 'Book Item'}
+                            ${selectedItem.category === 'Produce' || selectedItem.category === 'Inputs' ? translate('buy_now') : translate('book_item')}
                         </button>
                         
                         <button class="btn btn-secondary btn-block" onclick="startChat('${selectedItem.id}', '${selectedItem.owner}')">
@@ -551,34 +578,34 @@ function updatePriceCalculation() {
     
     // Additional fees
     const protectionFee = selectedItem.protection_required ? Math.floor(basePrice * 0.1) : 0;
-    const caretakerFee = includeCaretaker ? Math.floor(basePrice * 0.06) : 0;
-    const platformCommission = Math.floor((basePrice + protectionFee + caretakerFee) * 0.05);
+    const helperFee = includeCaretaker ? Math.floor(basePrice * 0.06) : 0;
+    const platformCommission = Math.floor((basePrice + protectionFee + helperFee) * 0.05);
     
-    const total = basePrice + protectionFee + caretakerFee + platformCommission;
+    const total = basePrice + protectionFee + helperFee + platformCommission;
     
     breakdownElement.innerHTML = `
         <div class="calculator-row">
-            <span>Base Price:</span>
+            <span>${translate('base_price')}:</span>
             <span>₹${basePrice}</span>
         </div>
         ${protectionFee > 0 ? `
             <div class="calculator-row">
-                <span>Protection Fee:</span>
+                <span>${translate('protection_fee')}:</span>
                 <span>₹${protectionFee}</span>
             </div>
         ` : ''}
-        ${caretakerFee > 0 ? `
+        ${helperFee > 0 ? `
             <div class="calculator-row">
-                <span>Caretaker Fee:</span>
-                <span>₹${caretakerFee}</span>
+                <span>${translate('helper_fee')}:</span>
+                <span>₹${helperFee}</span>
             </div>
         ` : ''}
         <div class="calculator-row">
-            <span>Platform Fee:</span>
+            <span>${translate('platform_fee')}:</span>
             <span>₹${platformCommission}</span>
         </div>
         <div class="calculator-row calculator-total">
-            <span>Total:</span>
+            <span>${translate('total')}:</span>
             <span>₹${total}</span>
         </div>
     `;
@@ -600,6 +627,22 @@ async function initiateBooking() {
         
         if (selectedItem.price_type === 'per-day' || selectedItem.price_type === 'per-hour') {
             duration = parseInt(document.getElementById('rentalDuration')?.value || 1);
+            const startDate = document.getElementById('rentalStartDate')?.value;
+            if (!startDate) {
+                showError(translate('select_start_date'));
+                hideLoading();
+                return;
+            }
+            
+            // Validate start date is at least 3 days from now
+            const selectedDate = new Date(startDate);
+            const minDate = new Date();
+            minDate.setDate(minDate.getDate() + 3);
+            if (selectedDate < minDate) {
+                showError(translate('min_advance_booking'));
+                hideLoading();
+                return;
+            }
         } else {
             quantity = parseInt(document.getElementById('quantity')?.value || 1);
         }
@@ -617,16 +660,16 @@ async function initiateBooking() {
         }
         
         const protectionFee = selectedItem.protection_required ? Math.floor(basePrice * 0.1) : 0;
-        const caretakerFee = includeCaretaker ? Math.floor(basePrice * 0.06) : 0;
-        const platformCommission = Math.floor((basePrice + protectionFee + caretakerFee) * 0.05);
+        const helperFee = includeCaretaker ? Math.floor(basePrice * 0.06) : 0;
+        const platformCommission = Math.floor((basePrice + protectionFee + helperFee) * 0.05);
         
-        // Assign caretaker if needed
-        let assignedCaretaker = null;
+        // Assign helper if needed
+        let assignedHelper = null;
         if (includeCaretaker || selectedItem.high_value) {
             const users = await MockAPI.getUsers();
-            const availableCaretakers = users.filter(u => u.role === 'caretaker' && u.available);
-            if (availableCaretakers.length > 0) {
-                assignedCaretaker = availableCaretakers[0].id;
+            const availableHelpers = users.filter(u => u.role === 'helper' && u.available);
+            if (availableHelpers.length > 0) {
+                assignedHelper = availableHelpers[0].id;
             }
         }
         
@@ -635,15 +678,19 @@ async function initiateBooking() {
             item_id: selectedItem.id,
             renter: currentUser.id,
             owner: selectedItem.owner,
-            caretaker: assignedCaretaker,
-            start_date: new Date().toISOString().split('T')[0],
-            end_date: new Date(Date.now() + duration * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+            caretaker: assignedHelper,
+            start_date: selectedItem.price_type === 'per-day' || selectedItem.price_type === 'per-hour' 
+                ? document.getElementById('rentalStartDate')?.value 
+                : new Date().toISOString().split('T')[0],
+            end_date: selectedItem.price_type === 'per-day' || selectedItem.price_type === 'per-hour'
+                ? new Date(new Date(document.getElementById('rentalStartDate')?.value).getTime() + duration * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+                : new Date(Date.now() + duration * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
             status: 'pending',
             item_fee: basePrice,
             protection_fee: protectionFee,
-            caretaker_fee: caretakerFee,
+            caretaker_fee: helperFee,
             platform_commission: platformCommission,
-            total_amount: basePrice + protectionFee + caretakerFee + platformCommission,
+            total_amount: basePrice + protectionFee + helperFee + platformCommission,
             payment_status: 'pending',
             quantity: quantity,
             duration: duration
@@ -668,43 +715,51 @@ async function showBookingConfirmation(transactionData) {
     
     const modalContent = `
         <div class="modal-header">
-            <h3>Confirm Booking</h3>
+            <h3>${translate('confirm_booking')}</h3>
             <button class="close-btn" onclick="closeModal()">&times;</button>
         </div>
         <div class="modal-body">
             <h4>${selectedItem.title}</h4>
-            <p><strong>Owner:</strong> ${owner ? `${owner.avatar} ${owner.name}` : 'Unknown'}</p>
-            ${caretaker ? `<p><strong>Caretaker:</strong> ${caretaker.avatar} ${caretaker.name}</p>` : ''}
+            <p><strong>${translate('owner')}:</strong> ${owner ? `${owner.avatar} ${owner.name}` : 'Unknown'}</p>
+            ${caretaker ? `<p><strong>${translate('helper')}:</strong> <img src="${caretaker.avatar}" alt="Helper" style="width: 20px; height: 20px; border-radius: 50%; vertical-align: middle; margin-right: 4px;"> ${caretaker.name}</p>` : ''}
+            
+            <div class="address-section">
+                <h4>${translate('delivery_address')}</h4>
+                <div class="form-group">
+                    <label for="deliveryAddress">${translate('full_address')} *</label>
+                    <textarea id="deliveryAddress" placeholder="House/Plot number, Street, Landmark" rows="2" required>${currentUser.address || ''}</textarea>
+                </div>
+            </div>
             
             <div class="booking-details">
                 <div class="calculator-row">
-                    <span>Item Fee:</span>
+                    <span>${translate('item_fee')}:</span>
                     <span>₹${transactionData.item_fee}</span>
                 </div>
                 ${transactionData.protection_fee > 0 ? `
                     <div class="calculator-row">
-                        <span>Protection Fee:</span>
+                        <span>${translate('protection_fee')}:</span>
                         <span>₹${transactionData.protection_fee}</span>
                     </div>
                 ` : ''}
                 ${transactionData.caretaker_fee > 0 ? `
                     <div class="calculator-row">
-                        <span>Caretaker Fee:</span>
+                        <span>${translate('helper_fee')}:</span>
                         <span>₹${transactionData.caretaker_fee}</span>
                     </div>
                 ` : ''}
                 <div class="calculator-row">
-                    <span>Platform Fee:</span>
+                    <span>${translate('platform_fee')}:</span>
                     <span>₹${transactionData.platform_commission}</span>
                 </div>
                 <div class="calculator-row calculator-total">
-                    <span>Total Amount:</span>
+                    <span>${translate('total_amount')}:</span>
                     <span>₹${transactionData.total_amount}</span>
                 </div>
             </div>
             
             <div class="payment-methods">
-                <h4>Payment Method</h4>
+                <h4>${translate('payment_method')}</h4>
                 <label><input type="radio" name="paymentMethod" value="upi" checked> UPI</label>
                 <label><input type="radio" name="paymentMethod" value="wallet"> Wallet</label>
                 <label><input type="radio" name="paymentMethod" value="cod"> Cash on Delivery</label>
@@ -712,7 +767,7 @@ async function showBookingConfirmation(transactionData) {
         </div>
         <div class="modal-footer">
             <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-            <button class="btn btn-primary" onclick="confirmBooking('${JSON.stringify(transactionData).replace(/"/g, '&quot;')}')">Confirm & Pay</button>
+            <button class="btn btn-primary" onclick="confirmBooking('${JSON.stringify(transactionData).replace(/"/g, '&quot;')}')">${translate('confirm_pay')}</button>
         </div>
     `;
     
@@ -737,11 +792,21 @@ async function confirmBooking(transactionDataStr) {
         // Create transaction
         const transaction = await MockAPI.createTransaction(transactionData);
         
-        // Update item availability
+        // Update item inventory
         const items = JSON.parse(localStorage.getItem('items') || '[]');
         const itemIndex = items.findIndex(item => item.id === selectedItem.id);
         if (itemIndex !== -1) {
-            items[itemIndex].availability = 'booked';
+            // For quantity-based items, reduce the available quantity
+            if (transactionData.quantity && items[itemIndex].quantity) {
+                items[itemIndex].quantity -= transactionData.quantity;
+                // Mark as unavailable if no quantity left
+                if (items[itemIndex].quantity <= 0) {
+                    items[itemIndex].availability = 'unavailable';
+                }
+            } else {
+                // For rental items, mark as booked for the period
+                items[itemIndex].availability = 'booked';
+            }
             localStorage.setItem('items', JSON.stringify(items));
         }
         
@@ -751,13 +816,13 @@ async function confirmBooking(transactionDataStr) {
                 transaction_id: transaction.id,
                 sender: transactionData.caretaker,
                 receiver: transactionData.renter,
-                message: `Hello ${currentUser.name}, I am assigned as caretaker for this transaction. I will ensure proper handling of the item.`,
+                message: `Hello ${currentUser.name}, I am assigned as helper for this transaction. I will ensure proper handling of the item with meal and staying care.`,
                 type: 'system'
             });
         }
         
         hideLoading();
-        showSuccess('Booking confirmed successfully! Payment processed.');
+        showSuccess(translate('booking_confirmed'));
         
         // Redirect to orders page
         setTimeout(() => showPage('orders'), 2000);
@@ -794,7 +859,9 @@ async function submitListing(event) {
             high_value: document.getElementById('protectionRequired').checked, // Assume protected items are high value
             tags: document.getElementById('itemTags').value.split(',').map(tag => tag.trim()).filter(tag => tag),
             images: [], // Will be populated by image processing
-            condition: 'Good' // Default condition
+            condition: 'Good', // Default condition
+            available_from: document.getElementById('availableFrom').value || null,
+            available_to: document.getElementById('availableTo').value || null
         };
         
         // Set price based on type
@@ -891,30 +958,53 @@ function updateCategoryFields() {
                 <option value="per-hour">Per Hour</option>
                 <option value="per-day">Per Day</option>
             `;
+            // Show availability dates for rental items
+            if (document.getElementById('availabilityDates')) {
+                document.getElementById('availabilityDates').style.display = 'block';
+                document.getElementById('availableFrom').required = true;
+                document.getElementById('availableTo').required = true;
+            }
             break;
         case 'Inputs':
         case 'Produce':
+        case 'Waste':
             priceType.innerHTML = `
                 <option value="per-kg">Per KG</option>
                 <option value="per-unit">Per Unit/Bag</option>
                 <option value="fixed">Fixed Price</option>
             `;
-            break;
-        case 'Waste':
-            priceType.innerHTML = `
-                <option value="per-unit">Per Unit</option>
-                <option value="per-kg">Per KG</option>
-                <option value="fixed">Fixed Price</option>
-            `;
+            // Hide availability dates for purchase items
+            if (document.getElementById('availabilityDates')) {
+                document.getElementById('availabilityDates').style.display = 'none';
+                document.getElementById('availableFrom').required = false;
+                document.getElementById('availableTo').required = false;
+            }
             break;
         case 'Manpower':
             priceType.innerHTML = `
                 <option value="per-hour">Per Hour</option>
                 <option value="per-day">Per Day</option>
             `;
+            // Show availability dates for service items
+            if (document.getElementById('availabilityDates')) {
+                document.getElementById('availabilityDates').style.display = 'block';
+                document.getElementById('availableFrom').required = true;
+                document.getElementById('availableTo').required = true;
+            }
             break;
         default:
             priceType.innerHTML = '<option value="fixed">Fixed Price</option>';
+    }
+    
+    // Set minimum date to 3 days from now for availability
+    const minDate = new Date();
+    minDate.setDate(minDate.getDate() + 3);
+    const minDateStr = minDate.toISOString().split('T')[0];
+    if (document.getElementById('availableFrom')) {
+        document.getElementById('availableFrom').min = minDateStr;
+    }
+    if (document.getElementById('availableTo')) {
+        document.getElementById('availableTo').min = minDateStr;
     }
 }
 
@@ -939,7 +1029,7 @@ function displayOrders(transactions) {
     if (!container) return;
     
     if (transactions.length === 0) {
-        container.innerHTML = '<div class="no-orders">No orders found</div>';
+        container.innerHTML = `<div class="no-orders">${translate('no_orders')}</div>`;
         return;
     }
     
@@ -960,18 +1050,18 @@ function displayOrders(transactions) {
                 </div>
                 
                 <div class="order-details">
-                    <p><strong>Transaction ID:</strong> ${transaction.id}</p>
-                    <p><strong>${currentUser?.role === 'owner' ? 'Renter' : 'Owner'}:</strong> 
+                    <p><strong>${translate('transaction_id')}:</strong> ${transaction.id}</p>
+                    <p><strong>${currentUser?.role === 'owner' ? translate('renter') : translate('owner')}:</strong> 
                        ${currentUser?.role === 'owner' ? 
                          (renter ? `<img src="${renter.avatar}" alt="Renter" style="width: 20px; height: 20px; border-radius: 50%; vertical-align: middle; margin-right: 4px;"> ${renter.name}` : 'Unknown') : 
                          (owner ? `<img src="${owner.avatar}" alt="Owner" style="width: 20px; height: 20px; border-radius: 50%; vertical-align: middle; margin-right: 4px;"> ${owner.name}` : 'Unknown')
                        }
                     </p>
-                    ${caretaker ? `<p><strong>Caretaker:</strong> <img src="${caretaker.avatar}" alt="Caretaker" style="width: 20px; height: 20px; border-radius: 50%; vertical-align: middle; margin-right: 4px;"> ${caretaker.name}</p>` : ''}
-                    <p><strong>Amount:</strong> ₹${transaction.total_amount}</p>
-                    <p><strong>Start Date:</strong> ${transaction.start_date}</p>
-                    <p><strong>End Date:</strong> ${transaction.end_date}</p>
-                    <p><strong>Payment Status:</strong> ${transaction.payment_status}</p>
+                    ${caretaker ? `<p><strong>${translate('helper')}:</strong> <img src="${caretaker.avatar}" alt="Helper" style="width: 20px; height: 20px; border-radius: 50%; vertical-align: middle; margin-right: 4px;"> ${caretaker.name}</p>` : ''}
+                    <p><strong>${translate('amount')}:</strong> ₹${transaction.total_amount}</p>
+                    <p><strong>${translate('start_date_label')}:</strong> ${transaction.start_date}</p>
+                    <p><strong>${translate('end_date_label')}:</strong> ${transaction.end_date}</p>
+                    <p><strong>${translate('payment_status')}:</strong> ${transaction.payment_status}</p>
                 </div>
                 
                 <div class="order-actions">
@@ -988,8 +1078,8 @@ function displayOrders(transactions) {
                         <button class="btn btn-success" onclick="confirmReturn('${transaction.id}')">Confirm Return</button>
                     ` : ''}
                     
-                    ${currentUser?.role === 'caretaker' && transaction.caretaker === currentUser.id ? `
-                        <button class="btn btn-primary" onclick="caretakerAction('${transaction.id}')">Caretaker Actions</button>
+                    ${currentUser?.role === 'helper' && transaction.caretaker === currentUser.id ? `
+                        <button class="btn btn-primary" onclick="helperAction('${transaction.id}')">Helper Actions</button>
                     ` : ''}
                 </div>
             </div>
@@ -1219,7 +1309,7 @@ function displayChatMessages(messages) {
     if (!container) return;
     
     if (messages.length === 0) {
-        container.innerHTML = '<div class="no-messages">No messages yet</div>';
+        container.innerHTML = `<div class="no-messages">${translate('no_messages')}</div>`;
         return;
     }
     
@@ -1300,7 +1390,7 @@ async function startChat(itemId, ownerId, transactionId = null) {
                 
                 // Auto-focus the message input
                 setTimeout(() => {
-                    const input = document.getElementById('messageInput');
+                    const input = document.getElementById('chatInput');
                     if (input) input.focus();
                 }, 100);
                 
@@ -1443,40 +1533,40 @@ function displayProfile(user, transactions) {
             <h2>${user.name}</h2>
             <p>${user.village}, ${user.district}</p>
             <div class="verification-status">
-                ${user.verified ? '✅ Verified User' : '⚠️ Not Verified'}
+                ${user.verified ? translate('verified_user_badge') : translate('not_verified_badge')}
             </div>
             <div class="rating">
                 ${'⭐'.repeat(Math.floor(user.rating || 0))} ${user.rating || 0}/5 • ${user.totalTransactions || 0} reviews
             </div>
             <div class="role-badge role-${user.role}">
-                ${user.role === 'owner' ? '🏠 Owner/Lister' : user.role === 'renter' ? '🛒 Renter/Buyer' : '🛡️ Caretaker'}
+                ${user.role === 'owner' ? translate('owner_role') : user.role === 'renter' ? translate('renter_role') : translate('helper_role')}
             </div>
         </div>
         
         <div class="profile-stats">
             <div class="stat-card">
-                <h3>Total Transactions</h3>
+                <h3>${translate('total_transactions')}</h3>
                 <div class="stat-value">${user.totalTransactions || 0}</div>
-                <div class="stat-subtitle">All time</div>
+                <div class="stat-subtitle">${translate('all_time')}</div>
             </div>
             <div class="stat-card">
-                <h3>Completed Orders</h3>
+                <h3>${translate('completed_orders')}</h3>
                 <div class="stat-value">${completedTransactions}</div>
-                <div class="stat-subtitle">Success rate: ${user.totalTransactions ? Math.round((completedTransactions / user.totalTransactions) * 100) : 0}%</div>
+                <div class="stat-subtitle">${translate('success_rate')}: ${user.totalTransactions ? Math.round((completedTransactions / user.totalTransactions) * 100) : 0}%</div>
             </div>
             <div class="stat-card">
-                <h3>Active Orders</h3>
+                <h3>${translate('active_orders')}</h3>
                 <div class="stat-value">${activeTransactions}</div>
                 <div class="stat-subtitle">Currently running</div>
             </div>
             <div class="stat-card">
-                <h3>Member Since</h3>
+                <h3>${translate('member_since')}</h3>
                 <div class="stat-value">${joinedDateFormatted}</div>
                 <div class="stat-subtitle">${daysSinceJoined} days ago</div>
             </div>
             ${currentUser.role === 'owner' ? `
                 <div class="stat-card">
-                    <h3>Total Earnings</h3>
+                    <h3>${translate('total_earnings')}</h3>
                     <div class="stat-value">₹${totalEarnings.toLocaleString()}</div>
                     <div class="stat-subtitle">From completed orders</div>
                 </div>
@@ -1485,7 +1575,7 @@ function displayProfile(user, transactions) {
         
         ${recentTransactions.length > 0 ? `
             <div class="recent-activity">
-                <h3>Recent Activity</h3>
+                <h3>${translate('recent_activity')}</h3>
                 <div class="activity-list">
                     ${recentTransactions.map(transaction => {
                         const createdDate = new Date(transaction.created_date);
@@ -1505,8 +1595,8 @@ function displayProfile(user, transactions) {
         ` : ''}
         
         <div class="profile-actions">
-            <button class="btn btn-primary" onclick="showEditProfile()">Edit Profile</button>
-            <button class="btn btn-secondary" onclick="viewTransactionHistory()">Transaction History</button>
+            <button class="btn btn-primary" onclick="showEditProfile()">${translate('edit_profile')}</button>
+            <button class="btn btn-secondary" onclick="viewTransactionHistory()">${translate('transaction_history')}</button>
         </div>
     `;
 }
@@ -1545,7 +1635,7 @@ function displayRecentTransactions(transactions) {
     if (!container) return;
     
     if (transactions.length === 0) {
-        container.innerHTML = '<p>No transactions found</p>';
+        container.innerHTML = `<p>${translate('no_transactions')}</p>`;
         return;
     }
     
@@ -1564,7 +1654,7 @@ function displayDisputes(disputes) {
     if (!container) return;
     
     if (disputes.length === 0) {
-        container.innerHTML = '<p>No disputes found</p>';
+        container.innerHTML = `<p>${translate('no_disputes')}</p>`;
         return;
     }
     
@@ -1575,8 +1665,8 @@ function displayDisputes(disputes) {
             <p><strong>Issue:</strong> ${dispute.issue}</p>
             <p><strong>Status:</strong> ${dispute.status}</p>
             <div class="dispute-actions">
-                <button class="btn btn-success" onclick="resolveDispute('${dispute.id}', 'resolved')">Resolve</button>
-                <button class="btn btn-danger" onclick="resolveDispute('${dispute.id}', 'rejected')">Reject</button>
+                <button class="btn btn-success" onclick="resolveDispute('${dispute.id}', 'resolved')">${translate('resolve')}</button>
+                <button class="btn btn-danger" onclick="resolveDispute('${dispute.id}', 'rejected')">${translate('reject')}</button>
             </div>
         </div>
     `).join('');
@@ -1695,46 +1785,50 @@ function showEditProfile() {
     
     const modalContent = `
         <div class="modal-header">
-            <h3>Edit Profile</h3>
+            <h3>${translate('edit_profile_title')}</h3>
             <button class="close-btn" onclick="closeModal()">&times;</button>
         </div>
         <div class="modal-body">
             <form class="edit-profile-form" id="editProfileForm" onsubmit="handleEditProfile(event)">
                 <div class="form-group">
-                    <label for="editName">Full Name</label>
+                    <label for="editName">${translate('full_name')}</label>
                     <input type="text" id="editName" value="${currentUser.name}" required>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="editVillage">Village</label>
+                        <label for="editVillage">${translate('village')}</label>
                         <input type="text" id="editVillage" value="${currentUser.village}" required>
                     </div>
                     <div class="form-group">
-                        <label for="editDistrict">District</label>
+                        <label for="editDistrict">${translate('district')}</label>
                         <input type="text" id="editDistrict" value="${currentUser.district}" required>
                     </div>
                 </div>
+                <div class="form-group">
+                    <label for="editAddress">Full Address</label>
+                    <textarea id="editAddress" placeholder="House/Plot number, Street, Landmark" rows="2">${currentUser.address || ''}</textarea>
+                </div>
                 <div class="role-selection">
-                    <h4>Primary Role</h4>
+                    <h4>${translate('primary_role')}</h4>
                     <div class="role-option ${currentUser.role === 'renter' ? 'selected' : ''}">
                         <input type="radio" name="editRole" value="renter" ${currentUser.role === 'renter' ? 'checked' : ''}>
                         <div>
-                            <strong>Renter/Buyer</strong>
-                            <div class="role-description">Rent or buy items from others in the community</div>
+                            <strong>${translate('renter_buyer')}</strong>
+                            <div class="role-description">${translate('renter_desc')}</div>
                         </div>
                     </div>
                     <div class="role-option ${currentUser.role === 'owner' ? 'selected' : ''}">
                         <input type="radio" name="editRole" value="owner" ${currentUser.role === 'owner' ? 'checked' : ''}>
                         <div>
-                            <strong>Owner/Lister</strong>
-                            <div class="role-description">List your items for rent or sale to others</div>
+                            <strong>${translate('owner_lister')}</strong>
+                            <div class="role-description">${translate('owner_desc')}</div>
                         </div>
                     </div>
-                    <div class="role-option ${currentUser.role === 'caretaker' ? 'selected' : ''}">
-                        <input type="radio" name="editRole" value="caretaker" ${currentUser.role === 'caretaker' ? 'checked' : ''}>
+                    <div class="role-option ${currentUser.role === 'helper' ? 'selected' : ''}">
+                        <input type="radio" name="editRole" value="helper" ${currentUser.role === 'helper' ? 'checked' : ''}>
                         <div>
-                            <strong>Caretaker</strong>
-                            <div class="role-description">Provide protection and inspection services</div>
+                            <strong>Helper</strong>
+                            <div class="role-description">Provide helper and caretaker services for the community</div>
                         </div>
                     </div>
                 </div>
@@ -1758,17 +1852,19 @@ async function handleEditProfile(event) {
         const name = document.getElementById('editName').value;
         const village = document.getElementById('editVillage').value;
         const district = document.getElementById('editDistrict').value;
+        const address = document.getElementById('editAddress').value;
         const role = document.querySelector('input[name="editRole"]:checked').value;
         
         // Update current user
         currentUser.name = name;
         currentUser.village = village;
         currentUser.district = district;
+        currentUser.address = address;
         
         // Handle role change
         if (currentUser.role !== role) {
             currentUser.role = role;
-            currentUser.avatar = role === 'caretaker' ? 'assets/images/Caretaker_service_agent_avatar_cc93feff.png' : (role === 'owner' ? 'assets/images/Male_farmer_avatar_profile_3effb6e6.png' : 'assets/images/Female_farmer_avatar_profile_a2917358.png');
+            currentUser.avatar = role === 'helper' ? 'assets/images/Caretaker_service_agent_avatar_cc93feff.png' : (role === 'owner' ? 'assets/images/Male_farmer_avatar_profile_3effb6e6.png' : 'assets/images/Female_farmer_avatar_profile_a2917358.png');
         }
         
         // Update in localStorage
@@ -1803,8 +1899,8 @@ function viewTransactionHistory() {
     showPage('orders');
 }
 
-function caretakerAction(transactionId) {
-    alert('Caretaker action interface coming soon!');
+function helperAction(transactionId) {
+    alert('Helper action interface coming soon!');
 }
 
 // PWA Service Worker Registration

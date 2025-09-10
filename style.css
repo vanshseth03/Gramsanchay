@@ -753,6 +753,96 @@ body {
     border-radius: 8px;
 }
 
+/* Address section */
+.address-section {
+    background: var(--light-color);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 1rem;
+}
+
+.address-section h4 {
+    margin-bottom: 0.5rem;
+    color: var(--primary-color);
+}
+
+/* Delivery note */
+.delivery-note {
+    background: #e8f5e8;
+    border: 1px solid #4caf50;
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+.delivery-note p {
+    margin: 0;
+    color: #2e7d32;
+    font-size: 0.9rem;
+}
+
+/* High value item note */
+.high-value-note {
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+.high-value-note p {
+    margin: 0.5rem 0;
+    color: #856404;
+    font-size: 0.9rem;
+}
+
+/* Language selector */
+.language-selector {
+    margin-right: 1rem;
+}
+
+.language-selector select {
+    background: var(--background-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--text-color);
+    cursor: pointer;
+}
+
+.language-selector select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+/* Rental booking form */
+.rental-booking-form .form-group {
+    margin-bottom: 1rem;
+}
+
+.rental-booking-form label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+}
+
+.rental-booking-form input,
+.rental-booking-form select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.rental-booking-form input:focus,
+.rental-booking-form select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
 .profile-stats {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));

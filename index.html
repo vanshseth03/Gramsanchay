@@ -19,18 +19,27 @@
             </div>
             
             <div class="nav-menu">
-                <a href="#" onclick="showPage('home')" class="nav-link active" id="nav-home">Home</a>
-                <a href="#" onclick="showPage('marketplace')" class="nav-link" id="nav-marketplace">Marketplace</a>
-                <a href="#" onclick="showPage('orders')" class="nav-link" id="nav-orders">My Orders</a>
-                <a href="#" onclick="showPage('chat')" class="nav-link" id="nav-chat">Messages</a>
-                <a href="#" onclick="showPage('profile')" class="nav-link" id="nav-profile">Profile</a>
+                <a href="#" onclick="showPage('home')" class="nav-link active" id="nav-home" data-translate="home">Home</a>
+                <a href="#" onclick="showPage('marketplace')" class="nav-link" id="nav-marketplace" data-translate="marketplace">Marketplace</a>
+                <a href="#" onclick="showPage('orders')" class="nav-link" id="nav-orders" data-translate="orders">My Orders</a>
+                <a href="#" onclick="showPage('chat')" class="nav-link" id="nav-chat" data-translate="chat">Messages</a>
+                <a href="#" onclick="showPage('profile')" class="nav-link" id="nav-profile" data-translate="profile">Profile</a>
             </div>
 
+            <!-- Language Selector -->
+            <div class="language-selector">
+                <select id="languageSelect" onchange="changeLanguage(this.value)">
+                    <option value="en">English</option>
+                    <option value="hi">हिंदी</option>
+                    <option value="pa">ਪੰਜਾਬੀ</option>
+                </select>
+            </div>
+            
             <!-- User Actions -->
             <div class="user-actions">
-                <button class="btn btn-outline" onclick="showLogin()" id="loginBtn">Login</button>
-                <button class="btn btn-primary" onclick="showRegister()" id="registerBtn">Register</button>
-                <button class="btn btn-outline" onclick="logout()" id="logoutBtn" style="display: none;">Logout</button>
+                <button class="btn btn-outline" onclick="showLogin()" id="loginBtn" data-translate="login">Login</button>
+                <button class="btn btn-primary" onclick="showRegister()" id="registerBtn" data-translate="register">Register</button>
+                <button class="btn btn-outline" onclick="logout()" id="logoutBtn" style="display: none;" data-translate="logout">Logout</button>
             </div>
         </div>
     </nav>
@@ -46,11 +55,11 @@
         <div id="page-home" class="page active">
             <section class="hero">
                 <div class="hero-content">
-                    <h2>Trusted Village Exchange Platform</h2>
-                    <p>Exchange tools, manpower, inputs, produce, and farm waste with protection and caretaker services</p>
+                    <h2 data-translate="trusted_village_exchange">Trusted Village Exchange Platform</h2>
+                    <p data-translate="exchange_description">Exchange tools, manpower, inputs, produce, and farm waste with protection and helper services</p>
                     <div class="hero-actions">
-                        <button class="btn btn-primary" onclick="showPage('marketplace')">Browse Marketplace</button>
-                        <button class="btn btn-secondary" onclick="showPage('list-item')">List Item</button>
+                        <button class="btn btn-primary" onclick="showPage('marketplace')" data-translate="browse_marketplace">Browse Marketplace</button>
+                        <button class="btn btn-secondary" onclick="showPage('list-item')" data-translate="list_item">List Item</button>
                     </div>
                 </div>
             </section>
@@ -59,33 +68,33 @@
                 <div class="feature-grid">
                     <div class="feature-card">
                         <div class="feature-icon">🚜</div>
-                        <h3>Tools & Equipment</h3>
-                        <p>Rent tractors, harvesters, and farming equipment from verified neighbors</p>
+                        <h3 data-translate="tools_equipment">Tools & Equipment</h3>
+                        <p data-translate="tools_equipment_desc">Rent tractors, harvesters, and farming equipment from verified neighbors</p>
                     </div>
                     <div class="feature-card">
                         <div class="feature-icon">🌱</div>
-                        <h3>Seeds & Inputs</h3>
-                        <p>Find quality seeds, fertilizers, and pesticides at fair prices</p>
+                        <h3 data-translate="seeds_inputs">Seeds & Inputs</h3>
+                        <p data-translate="seeds_inputs_desc">Find quality seeds, fertilizers, and pesticides at fair prices</p>
                     </div>
                     <div class="feature-card">
                         <div class="feature-icon">🥕</div>
-                        <h3>Fresh Produce</h3>
-                        <p>Buy and sell farm-fresh vegetables and grains directly</p>
+                        <h3 data-translate="fresh_produce">Fresh Produce</h3>
+                        <p data-translate="fresh_produce_desc">Buy and sell farm-fresh vegetables and grains directly</p>
                     </div>
                     <div class="feature-card">
                         <div class="feature-icon">♻️</div>
-                        <h3>Waste-to-Value</h3>
-                        <p>Convert stubble and waste into valuable resources</p>
+                        <h3 data-translate="waste_value">Waste-to-Value</h3>
+                        <p data-translate="waste_value_desc">Convert stubble and waste into valuable resources</p>
                     </div>
                     <div class="feature-card">
                         <div class="feature-icon">👷</div>
-                        <h3>Skilled Labor</h3>
-                        <p>Find experienced workers for seasonal farming needs</p>
+                        <h3 data-translate="skilled_labor">Skilled Labor</h3>
+                        <p data-translate="skilled_labor_desc">Find experienced workers for seasonal farming needs</p>
                     </div>
                     <div class="feature-card">
                         <div class="feature-icon">🛡️</div>
-                        <h3>Protected Transactions</h3>
-                        <p>Built-in protection and caretaker services for high-value items</p>
+                        <h3 data-translate="protected_transactions">Protected Transactions</h3>
+                        <p data-translate="protected_transactions_desc">Built-in protection and helper services for high-value items</p>
                     </div>
                 </div>
             </section>
@@ -94,31 +103,31 @@
         <!-- Marketplace Page -->
         <div id="page-marketplace" class="page">
             <div class="page-header">
-                <h2>Marketplace</h2>
-                <button class="btn btn-primary" onclick="showPage('list-item')">+ List Item</button>
+                <h2 data-translate="marketplace">Marketplace</h2>
+                <button class="btn btn-primary" onclick="showPage('list-item')" data-translate="list_new_item">+ List Item</button>
             </div>
 
             <div class="marketplace-filters">
                 <div class="search-bar">
-                    <input type="text" id="searchInput" placeholder="Search items..." onkeyup="filterItems()">
+                    <input type="text" id="searchInput" data-translate-placeholder="search_items" placeholder="Search items..." onkeyup="filterItems()">
                     <button class="search-btn" onclick="filterItems()">🔍</button>
                 </div>
 
                 <div class="filter-controls">
                     <select id="categoryFilter" onchange="filterItems()">
-                        <option value="">All Categories</option>
-                        <option value="Tools">Tools</option>
-                        <option value="Inputs">Inputs</option>
-                        <option value="Produce">Produce</option>
-                        <option value="Waste">Waste</option>
-                        <option value="Manpower">Manpower</option>
+                        <option value="" data-translate="all_categories">All Categories</option>
+                        <option value="Tools" data-translate="tools_equipment">Tools</option>
+                        <option value="Inputs" data-translate="seeds_inputs">Inputs</option>
+                        <option value="Produce" data-translate="fresh_produce">Produce</option>
+                        <option value="Waste" data-translate="farm_waste">Waste</option>
+                        <option value="Manpower" data-translate="skilled_labor">Manpower</option>
                     </select>
 
                     <select id="sortFilter" onchange="filterItems()">
-                        <option value="newest">Newest First</option>
-                        <option value="price-low">Price: Low to High</option>
-                        <option value="price-high">Price: High to Low</option>
-                        <option value="distance">By Distance</option>
+                        <option value="newest" data-translate="newest_first">Newest First</option>
+                        <option value="price-low" data-translate="price_low_high">Price: Low to High</option>
+                        <option value="price-high" data-translate="price_high_low">Price: High to Low</option>
+                        <option value="distance" data-translate="by_distance">By Distance</option>
                     </select>
                 </div>
             </div>
@@ -131,40 +140,40 @@
         <!-- List Item Page -->
         <div id="page-list-item" class="page">
             <div class="page-header">
-                <h2>List Your Item</h2>
+                <h2 data-translate="list_your_item">List Your Item</h2>
             </div>
 
             <form class="list-item-form" id="listItemForm" onsubmit="submitListing(event)">
                 <div class="form-group">
-                    <label for="itemTitle">Title *</label>
+                    <label for="itemTitle" data-translate="title">Title *</label>
                     <input type="text" id="itemTitle" required placeholder="e.g., Mahindra Tractor 2020">
                 </div>
 
                 <div class="form-group">
-                    <label for="itemCategory">Category *</label>
+                    <label for="itemCategory" data-translate="category">Category *</label>
                     <select id="itemCategory" required onchange="updateCategoryFields()">
-                        <option value="">Select Category</option>
-                        <option value="Tools">Tools & Equipment</option>
-                        <option value="Inputs">Seeds & Inputs</option>
-                        <option value="Produce">Produce</option>
-                        <option value="Waste">Farm Waste</option>
-                        <option value="Manpower">Skilled Labor</option>
+                        <option value="" data-translate="select_category">Select Category</option>
+                        <option value="Tools" data-translate="tools_equipment">Tools & Equipment</option>
+                        <option value="Inputs" data-translate="seeds_inputs">Seeds & Inputs</option>
+                        <option value="Produce" data-translate="fresh_produce">Produce</option>
+                        <option value="Waste" data-translate="farm_waste">Farm Waste</option>
+                        <option value="Manpower" data-translate="skilled_labor">Skilled Labor</option>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label for="itemDescription">Description *</label>
+                    <label for="itemDescription" data-translate="description">Description *</label>
                     <textarea id="itemDescription" required placeholder="Describe your item, condition, and any special requirements"></textarea>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="itemQuantity">Quantity</label>
+                        <label for="itemQuantity" data-translate="quantity">Quantity</label>
                         <input type="number" id="itemQuantity" min="1" value="1">
                     </div>
 
                     <div class="form-group">
-                        <label for="priceType">Price Type</label>
+                        <label for="priceType" data-translate="price_type">Price Type</label>
                         <select id="priceType">
                             <option value="per-hour">Per Hour</option>
                             <option value="per-day">Per Day</option>
@@ -174,7 +183,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="itemPrice">Price (₹) *</label>
+                        <label for="itemPrice" data-translate="price">Price (₹) *</label>
                         <input type="number" id="itemPrice" required min="1" placeholder="Enter price">
                     </div>
                 </div>
@@ -197,12 +206,26 @@
                     <input type="text" id="itemLocation" required placeholder="Village, District">
                 </div>
 
+                <div class="form-group" id="availabilityDates" style="display: none;">
+                    <label>Availability Period</label>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="availableFrom">Available From *</label>
+                            <input type="date" id="availableFrom" min="">
+                        </div>
+                        <div class="form-group">
+                            <label for="availableTo">Available Until *</label>
+                            <input type="date" id="availableTo" min="">
+                        </div>
+                    </div>
+                </div>
+
                 <div class="form-group">
                     <label for="itemTags">Tags (comma-separated)</label>
                     <input type="text" id="itemTags" placeholder="organic, verified, premium">
                 </div>
 
-                <button type="submit" class="btn btn-primary btn-block">List Item</button>
+                <button type="submit" class="btn btn-primary btn-block" data-translate="list_item">List Item</button>
             </form>
         </div>
 
@@ -308,12 +331,16 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label for="registerAddress">Full Address</label>
+                            <textarea id="registerAddress" placeholder="House/Plot number, Street, Landmark (optional)" rows="2"></textarea>
+                        </div>
+                        <div class="form-group">
                             <label for="registerRole">I want to *</label>
                             <select id="registerRole" required>
                                 <option value="">Select your primary role</option>
                                 <option value="renter">Rent/Buy items from others</option>
                                 <option value="owner">List my items for rent/sale</option>
-                                <option value="caretaker">Provide caretaker services</option>
+                                <option value="helper">Provide helper services</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -399,6 +426,7 @@
         </div>
     </div>
 
+    <script src="translations.js"></script>
     <script src="seed-data.js"></script>
     <script src="app.js"></script>
 </body>

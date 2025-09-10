@@ -56,7 +56,7 @@ const SEED_DATA = {
         {
             id: "c1",
             name: "Caretaker Mohan",
-            role: "caretaker", 
+            role: "helper", 
             village: "Bilaspur",
             district: "Punjab",
             available: true,
@@ -68,7 +68,7 @@ const SEED_DATA = {
         {
             id: "c2",
             name: "Caretaker Rajesh",
-            role: "caretaker",
+            role: "helper",
             village: "Raikot", 
             district: "Punjab",
             available: true,
@@ -322,7 +322,7 @@ const SEED_DATA = {
             transaction_id: "t1",
             sender: "c1",
             receiver: "u2",
-            message: "Hello, I am Mohan, assigned as caretaker for this transaction. I will inspect the tractor before and after use.",
+            message: "Hello, I am Mohan, assigned as helper for this transaction. I will inspect the tractor before and after use with proper care.",
             timestamp: "2024-12-09T15:20:00Z",
             type: "system"
         }
@@ -446,7 +446,7 @@ class MockAPI {
                 transactions = transactions.filter(t => t.renter === userId);
             } else if (role === 'owner') {
                 transactions = transactions.filter(t => t.owner === userId);
-            } else if (role === 'caretaker') {
+            } else if (role === 'helper') {
                 transactions = transactions.filter(t => t.caretaker === userId);
             }
         }
