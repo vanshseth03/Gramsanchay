@@ -10,6 +10,7 @@ body {
     line-height: 1.6;
     color: #333;
     background-color: #f8f9fa;
+    scroll-padding-top: 70px; /* navbar height */
 }
 
 /* CSS Variables */
@@ -115,8 +116,11 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem;
+    
 }
-
+.navbar-spacer {
+    height: 70px; /* same as navbar height */
+}
 /* Page Management */
 .page {
     display: none;
@@ -932,9 +936,17 @@ body {
 /* Responsive Design */
 @media (max-width: 768px) {
     .nav-container {
-        flex-direction: column;
-        text-align: center;
-    }
+  /* This is the key property to align items in a line */
+  display: flex;
+
+  /* This sets the horizontal alignment of the items */
+  /* Try other values: flex-start, center, space-around */
+  
+
+  /* This sets the vertical alignment of the items */
+  /* This is useful if items have different heights */
+  align-items: center; 
+}
     
     .nav-menu {
         justify-content: center;
@@ -943,7 +955,15 @@ body {
     .hero h2 {
         font-size: 2rem;
     }
-    
+    /* Inside your @media (max-width: 768px) block */
+
+    .user-actions {
+        width: 100%;             /* Make the container take the full width, forcing a new line */
+        justify-content: center; /* Center the buttons within the container */
+        margin-top: 1.8rem;        /* Add some space from the title bar above */
+        gap: 1rem;             
+        margin-left: 10rem;  /* Increase the gap for better spacing */
+    }
     .feature-grid {
         grid-template-columns: 1fr;
     }
@@ -959,11 +979,15 @@ body {
     
     .admin-stats {
         grid-template-columns: 1fr;
+        
     }
     
-    .main-content {
-        padding: 1rem;
-    }
+.main-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    padding-top: 2rem; /* 👈 ADD THIS LINE BACK (adjust if needed) */
+}
     
     .page-header {
         flex-direction: column;
@@ -1093,4 +1117,423 @@ a:focus {
         --border-color: #000;
         --shadow: 0 2px 10px rgba(0,0,0,0.3);
     }
+}
+
+/* Mobile Responsiveness */
+
+/* Hamburger Menu */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    padding: 0.5rem;
+    background: none;
+    border: none;
+    z-index: 1001;
+}
+
+.hamburger span {
+    width: 25px;
+    height: 3px;
+    background: var(--primary-color);
+    margin: 3px 0;
+    transition: 0.3s;
+    border-radius: 2px;
+}
+
+.hamburger.active span:nth-child(1) {
+    transform: rotate(-45deg) translate(-5px, 6px);
+}
+
+.hamburger.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger.active span:nth-child(3) {
+    transform: rotate(45deg) translate(-5px, -6px);
+}
+
+/* Mobile Navigation Overlay */
+.nav-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+.nav-overlay.active {
+    display: block;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    /* Navigation */
+    .nav-container {
+        padding: 0 1rem;
+        position: relative;
+    }
+    
+    .hamburger {
+        display: flex;
+    }
+    
+    .nav-menu {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 280px;
+        height: 100vh;
+        background: white;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        padding: 4rem 2rem 2rem;
+        box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+        transition: right 0.3s ease;
+        z-index: 1000;
+        gap: 0;
+    }
+    
+    .nav-menu.active {
+        right: 0;
+    }
+    
+    .nav-link {
+        width: 100%;
+        padding: 1rem;
+        margin-bottom: 0.5rem;
+        text-align: left;
+        border-radius: var(--border-radius);
+    }
+    
+    .user-actions {
+        position: absolute;
+        top: 1rem;
+        right: 4rem;
+        gap: 0.25rem;
+    }
+    
+    .user-actions .btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+    }
+    
+    /* Hero Section */
+    .hero h1 {
+        font-size: 2rem;
+    }
+    
+    .hero p {
+        font-size: 1rem;
+    }
+    
+    .hero-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    /* Forms */
+    .auth-container {
+        padding: 1rem;
+    }
+    
+    .auth-form {
+        padding: 1.5rem;
+    }
+    
+    .form-row {
+        flex-direction: column;
+    }
+    
+    .form-row .form-group {
+        margin-right: 0;
+    }
+    
+    /* Marketplace */
+    .marketplace-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: stretch;
+    }
+    
+    .marketplace-search {
+        flex-direction: column;
+    }
+    
+    .marketplace-filters {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .marketplace-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    /* Item Cards */
+    .item-card {
+        margin-bottom: 1rem;
+    }
+    
+    .item-details {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .item-actions {
+        width: 100%;
+        justify-content: space-between;
+        margin-top: 1rem;
+    }
+    
+    /* Chat */
+    .chat-container {
+        grid-template-columns: 1fr;
+        height: 500px;
+    }
+    
+    .chat-sidebar {
+        display: none;
+    }
+    
+    .chat-container.show-sidebar .chat-sidebar {
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 10;
+    }
+    
+    /* Modals */
+    .modal {
+        margin: 1rem;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+    
+    /* Admin Dashboard */
+    .admin-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+    
+    .admin-sections {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Orders */
+    .orders-tabs {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
+    .order-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .order-actions {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Extra small screens */
+    .nav-container {
+        padding: 0 0.5rem;
+    }
+    
+    .nav-brand h1 {
+        font-size: 1.2rem;
+    }
+    
+    .hero {
+        padding: 2rem 1rem;
+    }
+    
+    .hero h1 {
+        font-size: 1.8rem;
+    }
+    
+    .container {
+        padding: 0 0.5rem;
+    }
+    
+    .btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .modal {
+        margin: 0.5rem;
+    }
+    
+    .admin-stats {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Service Explanations Section */
+.service-explanations {
+    padding: 4rem 0;
+    background: linear-gradient(135deg, #f8fffe 0%, #f0f4f3 100%);
+}
+
+.service-explanations h2 {
+    text-align: center;
+    margin-bottom: 3rem;
+    color: var(--primary-color);
+    font-size: 2.5rem;
+}
+
+.explanation-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    gap: 3rem;
+    margin-bottom: 3rem;
+}
+
+.explanation-card {
+    background: white;
+    padding: 2.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    border-left: 4px solid var(--primary-color);
+}
+
+.explanation-icon {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.explanation-card h3 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.explanation-card p {
+    margin-bottom: 1.5rem;
+    line-height: 1.7;
+    color: #555;
+}
+
+.feature-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.feature-list li {
+    padding: 0.5rem 0;
+    position: relative;
+    padding-left: 1.5rem;
+    color: #666;
+}
+
+.feature-list li:before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: var(--success-color);
+    font-weight: bold;
+}
+
+.trust-indicators {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid var(--border-color);
+}
+
+.trust-item {
+    text-align: center;
+    padding: 1.5rem;
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.trust-item strong {
+    display: block;
+    color: var(--primary-color);
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.trust-item span {
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+/* Mobile adjustments for service explanations */
+@media (max-width: 768px) {
+    .service-explanations {
+        padding: 2rem 0;
+    }
+    
+    .service-explanations h2 {
+        font-size: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .explanation-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .explanation-card {
+        padding: 1.5rem;
+    }
+    
+    .trust-indicators {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .trust-item {
+        padding: 1rem;
+    }
+}
+
+
+/* Small screen tweak so menu stays centered and actions stay on same line */
+@media (max-width: 768px) {
+    /* ---------- NAVBAR FIX (paste at end of style.css) ---------- */
+.nav-container {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 1rem;
+  flex-wrap: nowrap !important; /* prevent second-line left-alignment */
+}
+
+/* allow center menu and keep actions on the right */
+.nav-brand { flex: 0 0 auto; }
+.nav-menu  { flex: 1 1 auto; display:flex; justify-content:center; gap:2rem; }
+.user-actions {
+
+
+  gap:0.5rem;
+  align-items:center;
+       /* cancel width:100% / margin-left rules */
+  width: auto !important;
+  position: absolute !important; /* cancel absolute positioning */
+ 
+
+}
+  .nav-container { padding: 0 1rem; }
+  .nav-menu { justify-content: center; }
+  .user-actions { order: 2; } /* keep actions visually last */
 }

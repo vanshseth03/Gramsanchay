@@ -159,7 +159,50 @@ const TRANSLATIONS = {
         newest_first: "Newest First",
         price_low_high: "Price: Low to High",
         price_high_low: "Price: High to Low",
-        by_distance: "By Distance"
+        by_distance: "By Distance",
+        
+        // Villages list
+        select_village: "Select Village",
+        bilaspur: "Bilaspur",
+        rampur: "Rampur", 
+        barola: "Barola",
+        dadri: "Dadri",
+        tigri: "Tigri",
+        jharoda: "Jharoda",
+        bamnauli: "Bamnauli",
+        sultanpur: "Sultanpur",
+        
+        // Price range filters
+        all_prices: "All Prices",
+        price_under_500: "Under ₹500",
+        price_500_1000: "₹500 - ₹1000",
+        price_1000_2000: "₹1000 - ₹2000", 
+        price_2000_5000: "₹2000 - ₹5000",
+        price_above_5000: "Above ₹5000",
+        
+        // Location filters
+        all_locations: "All Locations",
+        
+        // Service explanations
+        how_it_works: "How ग्रामसंचय Works",
+        caretaker_model: "Caretaker Model",
+        caretaker_explanation: "Our local caretakers are trusted community members who help bridge the technology gap. They assist sellers in uploading products, managing inventory, and help buyers place orders. Caretakers also provide on-ground support for quality control and dispute resolution, ensuring smooth transactions even in areas with low digital literacy.",
+        caretaker_feature_1: "Help with product listing and inventory management",
+        caretaker_feature_2: "Assist buyers with order placement and tracking", 
+        caretaker_feature_3: "Local quality control and verification",
+        caretaker_feature_4: "Dispute resolution and customer support",
+        delivery_model: "Secured Delivery System",
+        delivery_explanation: "Our delivery system ensures safe and efficient transportation of goods between villages. For local orders, caretakers coordinate hand-delivery or local logistics. For distant orders, we partner with reliable courier services using a hub-and-spoke model that prioritizes nearby items first and provides real-time tracking.",
+        delivery_feature_1: "Distance-based sorting (nearby items shown first)",
+        delivery_feature_2: "Local caretaker coordination for nearby deliveries",
+        delivery_feature_3: "Professional courier partnerships for distant orders",
+        delivery_feature_4: "Real-time tracking and SMS/app notifications",
+        protection_guarantee: "100% Protection Guarantee",
+        protection_guarantee_desc: "All high-value transactions include helper services and secure payment holding",
+        local_support: "24/7 Local Support",
+        local_support_desc: "Caretakers available in your village for immediate assistance",
+        verified_users: "Verified Community",
+        verified_users_desc: "All users verified through local community networks"
     },
     
     hi: {
@@ -321,7 +364,50 @@ const TRANSLATIONS = {
         newest_first: "नवीनतम पहले",
         price_low_high: "मूल्य: कम से अधिक",
         price_high_low: "मूल्य: अधिक से कम",
-        by_distance: "दूरी के अनुसार"
+        by_distance: "दूरी के अनुसार",
+        
+        // Villages list
+        select_village: "गांव चुनें",
+        bilaspur: "बिलासपुर",
+        rampur: "रामपुर",
+        barola: "बड़ोला",
+        dadri: "दादरी", 
+        tigri: "टिगरी",
+        jharoda: "झरोदा",
+        bamnauli: "बमनौली",
+        sultanpur: "सुल्तानपुर",
+        
+        // Price range filters
+        all_prices: "सभी कीमतें",
+        price_under_500: "₹500 से कम",
+        price_500_1000: "₹500 - ₹1000",
+        price_1000_2000: "₹1000 - ₹2000",
+        price_2000_5000: "₹2000 - ₹5000", 
+        price_above_5000: "₹5000 से अधिक",
+        
+        // Location filters
+        all_locations: "सभी स्थान",
+        
+        // Service explanations
+        how_it_works: "ग्रामसंचय कैसे काम करता है",
+        caretaker_model: "देखभाल करने वाला मॉडल",
+        caretaker_explanation: "हमारे स्थानीय देखभाल करने वाले विश्वसनीय समुदायिक सदस्य हैं जो तकनीकी अंतर को पाटने में मदद करते हैं। वे विक्रेताओं को उत्पाद अपलोड करने, इन्वेंट्री प्रबंधन में सहायता करते हैं, और खरीदारों को ऑर्डर देने में मदद करते हैं। देखभाल करने वाले गुणवत्ता नियंत्रण और विवाद समाधान के लिए जमीनी स्तर पर सहायता प्रदान करते हैं।",
+        caretaker_feature_1: "उत्पाद सूची और इन्वेंट्री प्रबंधन में सहायता",
+        caretaker_feature_2: "खरीदारों को ऑर्डर देने और ट्रैकिंग में सहायता",
+        caretaker_feature_3: "स्थानीय गुणवत्ता नियंत्रण और सत्यापन", 
+        caretaker_feature_4: "विवाद समाधान और ग्राहक सहायता",
+        delivery_model: "सुरक्षित डिलीवरी सिस्टम",
+        delivery_explanation: "हमारा डिलीवरी सिस्टम गांवों के बीच माल की सुरक्षित और कुशल परिवहन सुनिश्चित करता है। स्थानीय ऑर्डर के लिए, देखभाल करने वाले हस्तांतरण या स्थानीय रसद का समन्वय करते हैं। दूर के ऑर्डर के लिए, हम विश्वसनीय कूरियर सेवाओं के साथ साझेदारी करते हैं।",
+        delivery_feature_1: "दूरी-आधारित क्रमबद्धता (पास की वस्तुएं पहले दिखाई जाती हैं)",
+        delivery_feature_2: "पास की डिलीवरी के लिए स्थानीय देखभाल करने वाले का समन्वय",
+        delivery_feature_3: "दूर के ऑर्डर के लिए पेशेवर कूरियर साझेदारी",
+        delivery_feature_4: "रियल-टाइम ट्रैकिंग और SMS/ऐप सूचनाएं",
+        protection_guarantee: "100% सुरक्षा गारंटी",
+        protection_guarantee_desc: "सभी उच्च-मूल्य लेनदेन में सहायक सेवाएं और सुरक्षित भुगतान होल्डिंग शामिल है",
+        local_support: "24/7 स्थानीय सहायता",
+        local_support_desc: "तत्काल सहायता के लिए आपके गांव में देखभाल करने वाले उपलब्ध",
+        verified_users: "सत्यापित समुदाय", 
+        verified_users_desc: "सभी उपयोगकर्ता स्थानीय समुदायिक नेटवर्क के माध्यम से सत्यापित"
     },
     
     pa: {
@@ -483,7 +569,50 @@ const TRANSLATIONS = {
         newest_first: "ਸਭ ਤੋਂ ਨਵਾਂ ਪਹਿਲਾਂ",
         price_low_high: "ਕੀਮਤ: ਘੱਟ ਤੋਂ ਵੱਧ",
         price_high_low: "ਕੀਮਤ: ਵੱਧ ਤੋਂ ਘੱਟ",
-        by_distance: "ਦੂਰੀ ਦੇ ਅਨੁਸਾਰ"
+        by_distance: "ਦੂਰੀ ਦੇ ਅਨੁਸਾਰ",
+        
+        // Villages list
+        select_village: "ਪਿੰਡ ਚੁਣੋ",
+        bilaspur: "ਬਿਲਾਸਪੁਰ",
+        rampur: "ਰਾਮਪੁਰ",
+        barola: "ਬੜੋਲਾ",
+        dadri: "ਦਾਦਰੀ",
+        tigri: "ਟਿਗਰੀ", 
+        jharoda: "ਝਰੋਦਾ",
+        bamnauli: "ਬਮਨੌਲੀ",
+        sultanpur: "ਸੁਲਤਾਨਪੁਰ",
+        
+        // Price range filters
+        all_prices: "ਸਾਰੇ ਭਾਅ",
+        price_under_500: "₹500 ਤੋਂ ਘੱਟ",
+        price_500_1000: "₹500 - ₹1000",
+        price_1000_2000: "₹1000 - ₹2000",
+        price_2000_5000: "₹2000 - ₹5000",
+        price_above_5000: "₹5000 ਤੋਂ ਜ਼ਿਆਦਾ",
+        
+        // Location filters
+        all_locations: "ਸਾਰੇ ਸਥਾਨ",
+        
+        // Service explanations
+        how_it_works: "ਗ੍ਰਾਮਸੰਚਯ ਕਿਵੇਂ ਕੰਮ ਕਰਦਾ ਹੈ",
+        caretaker_model: "ਦੇਖਭਾਲ ਕਰਤਾ ਮਾਡਲ",
+        caretaker_explanation: "ਸਾਡੇ ਸਥਾਨਕ ਦੇਖਭਾਲ ਕਰਤਾ ਭਰੋਸੇਯੋਗ ਕਮਿਊਨਿਟੀ ਮੈਂਬਰ ਹਨ ਜੋ ਟੈਕਨਾਲੋਜੀ ਗੈਪ ਨੂੰ ਪਾਟਣ ਵਿੱਚ ਮਦਦ ਕਰਦੇ ਹਨ। ਉਹ ਵਿਕਰੇਤਾਵਾਂ ਨੂੰ ਉਤਪਾਦ ਅਪਲੋਡ ਕਰਨ, ਇਨਵੈਂਟਰੀ ਪ੍ਰਬੰਧਨ ਵਿੱਚ ਸਹਾਇਤਾ ਕਰਦੇ ਹਨ, ਅਤੇ ਖਰੀਦਦਾਰਾਂ ਨੂੰ ਆਰਡਰ ਦੇਣ ਵਿੱਚ ਮਦਦ ਕਰਦੇ ਹਨ।",
+        caretaker_feature_1: "ਉਤਪਾਦ ਸੂਚੀ ਅਤੇ ਇਨਵੈਂਟਰੀ ਪ੍ਰਬੰਧਨ ਵਿੱਚ ਮਦਦ",
+        caretaker_feature_2: "ਖਰੀਦਦਾਰਾਂ ਨੂੰ ਆਰਡਰ ਦੇਣ ਅਤੇ ਟਰੈਕਿੰਗ ਵਿੱਚ ਸਹਾਇਤਾ",
+        caretaker_feature_3: "ਸਥਾਨਕ ਗੁਣਵੱਤਾ ਨਿਯੰਤਰਣ ਅਤੇ ਤਸਦੀਕ",
+        caretaker_feature_4: "ਵਿਵਾਦ ਹੱਲ ਅਤੇ ਗਾਹਕ ਸਹਾਇਤਾ",
+        delivery_model: "ਸੁਰੱਖਿਤ ਡਿਲੀਵਰੀ ਸਿਸਟਮ",
+        delivery_explanation: "ਸਾਡਾ ਡਿਲੀਵਰੀ ਸਿਸਟਮ ਪਿੰਡਾਂ ਵਿਚਕਾਰ ਮਾਲ ਦੀ ਸੁਰੱਖਿਤ ਅਤੇ ਕੁਸ਼ਲ ਆਵਾਜਾਈ ਨੂੰ ਯਕੀਨੀ ਬਣਾਉਂਦਾ ਹੈ। ਸਥਾਨਕ ਆਰਡਰਾਂ ਲਈ, ਦੇਖਭਾਲ ਕਰਤਾ ਹੱਥੀਂ-ਡਿਲੀਵਰੀ ਜਾਂ ਸਥਾਨਕ ਲਾਜਿਸਟਿਕਸ ਦਾ ਤਾਲਮੇਲ ਕਰਦੇ ਹਨ।",
+        delivery_feature_1: "ਦੂਰੀ-ਆਧਾਰਿਤ ਕ੍ਰਮਬੱਧਤਾ (ਨੇੜਲੀਆਂ ਚੀਜ਼ਾਂ ਪਹਿਲਾਂ ਦਿਖਾਈਆਂ ਜਾਂਦੀਆਂ ਹਨ)",
+        delivery_feature_2: "ਨੇੜਲੀ ਡਿਲੀਵਰੀ ਲਈ ਸਥਾਨਕ ਦੇਖਭਾਲ ਕਰਤਾ ਤਾਲਮੇਲ",
+        delivery_feature_3: "ਦੂਰ ਦੇ ਆਰਡਰਾਂ ਲਈ ਪੇਸ਼ੇਵਰ ਕੂਰੀਅਰ ਸਾਂਝੇਦਾਰੀ",
+        delivery_feature_4: "ਰੀਅਲ-ਟਾਈਮ ਟਰੈਕਿੰਗ ਅਤੇ SMS/ਐਪ ਸੂਚਨਾਵਾਂ",
+        protection_guarantee: "100% ਸੁਰੱਖਿਆ ਗਾਰੰਟੀ",
+        protection_guarantee_desc: "ਸਾਰੇ ਉਚ-ਮੁੱਲ ਲੈਣ-ਦੇਣ ਵਿੱਚ ਸਹਾਇਕ ਸੇਵਾਵਾਂ ਅਤੇ ਸੁਰੱਖਿਤ ਭੁਗਤਾਨ ਹੋਲਡਿੰਗ ਸ਼ਾਮਲ ਹੈ",
+        local_support: "24/7 ਸਥਾਨਕ ਸਹਾਇਤਾ",
+        local_support_desc: "ਤੁਰੰਤ ਸਹਾਇਤਾ ਲਈ ਤੁਹਾਡੇ ਪਿੰਡ ਵਿੱਚ ਦੇਖਭਾਲ ਕਰਤਾ ਉਪਲਬਧ",
+        verified_users: "ਤਸਦੀਕਸ਼ੁਦਾ ਕਮਿਊਨਿਟੀ",
+        verified_users_desc: "ਸਾਰੇ ਯੂਜ਼ਰ ਸਥਾਨਕ ਕਮਿਊਨਿਟੀ ਨੈਟਵਰਕ ਰਾਹੀਂ ਤਸਦੀਕਸ਼ੁਦਾ"
     }
 };
 

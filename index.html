@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="ग्रामसंचय - Rural Peer-to-Peer Exchange Platform">
-    <title>🌾ग्रामसंचय - Rural Exchange Platform</title>
+    <title>ग्रामसंचय - Rural Exchange Platform</title>
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#2d5a27">
@@ -18,7 +18,11 @@
                 <h1>ग्रामसंचय</h1>
             </div>
             
-            <div class="nav-menu">
+            
+            
+            <div class="nav-overlay" id="navOverlay" onclick="closeMobileMenu()"></div>
+            
+            <div class="nav-menu" id="navMenu">
                 <a href="#" onclick="showPage('home')" class="nav-link active" id="nav-home" data-translate="home">Home</a>
                 <a href="#" onclick="showPage('marketplace')" class="nav-link" id="nav-marketplace" data-translate="marketplace">Marketplace</a>
                 <a href="#" onclick="showPage('orders')" class="nav-link" id="nav-orders" data-translate="orders">My Orders</a>
@@ -34,7 +38,11 @@
                     <option value="pa">ਪੰਜਾਬੀ</option>
                 </select>
             </div>
-            
+            <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
             <!-- User Actions -->
             <div class="user-actions">
                 <button class="btn btn-outline" onclick="showLogin()" id="loginBtn" data-translate="login">Login</button>
@@ -50,6 +58,7 @@
     </div>
 
     <!-- Main Content Container -->
+     
     <main class="main-content">
         <!-- Home Page -->
         <div id="page-home" class="page active">
@@ -98,6 +107,64 @@
                     </div>
                 </div>
             </section>
+
+            <!-- Service Explanations Section -->
+            <section class="service-explanations">
+                <div class="container">
+                    <h2 data-translate="how_it_works">How ग्रामसंचय Works</h2>
+                    
+                    <div class="explanation-grid">
+                        <div class="explanation-card">
+                            <div class="explanation-icon">👨‍🌾</div>
+                            <h3 data-translate="caretaker_model">Caretaker Model</h3>
+                            <p data-translate="caretaker_explanation">
+                                Our local caretakers are trusted community members who help bridge the technology gap. 
+                                They assist sellers in uploading products, managing inventory, and help buyers place orders. 
+                                Caretakers also provide on-ground support for quality control and dispute resolution, 
+                                ensuring smooth transactions even in areas with low digital literacy.
+                            </p>
+                            <ul class="feature-list">
+                                <li data-translate="caretaker_feature_1">Help with product listing and inventory management</li>
+                                <li data-translate="caretaker_feature_2">Assist buyers with order placement and tracking</li>
+                                <li data-translate="caretaker_feature_3">Local quality control and verification</li>
+                                <li data-translate="caretaker_feature_4">Dispute resolution and customer support</li>
+                            </ul>
+                        </div>
+
+                        <div class="explanation-card">
+                            <div class="explanation-icon">🚚</div>
+                            <h3 data-translate="delivery_model">Secured Delivery System</h3>
+                            <p data-translate="delivery_explanation">
+                                Our delivery system ensures safe and efficient transportation of goods between villages. 
+                                For local orders, caretakers coordinate hand-delivery or local logistics. 
+                                For distant orders, we partner with reliable courier services using a hub-and-spoke model 
+                                that prioritizes nearby items first and provides real-time tracking.
+                            </p>
+                            <ul class="feature-list">
+                                <li data-translate="delivery_feature_1">Distance-based sorting (nearby items shown first)</li>
+                                <li data-translate="delivery_feature_2">Local caretaker coordination for nearby deliveries</li>
+                                <li data-translate="delivery_feature_3">Professional courier partnerships for distant orders</li>
+                                <li data-translate="delivery_feature_4">Real-time tracking and SMS/app notifications</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="trust-indicators">
+                        <div class="trust-item">
+                            <strong data-translate="protection_guarantee">100% Protection Guarantee</strong>
+                            <span data-translate="protection_guarantee_desc">All high-value transactions include helper services and secure payment holding</span>
+                        </div>
+                        <div class="trust-item">
+                            <strong data-translate="local_support">24/7 Local Support</strong>
+                            <span data-translate="local_support_desc">Caretakers available in your village for immediate assistance</span>
+                        </div>
+                        <div class="trust-item">
+                            <strong data-translate="verified_users">Verified Community</strong>
+                            <span data-translate="verified_users_desc">All users verified through local community networks</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </div>
 
         <!-- Marketplace Page -->
@@ -121,6 +188,27 @@
                         <option value="Produce" data-translate="fresh_produce">Produce</option>
                         <option value="Waste" data-translate="farm_waste">Waste</option>
                         <option value="Manpower" data-translate="skilled_labor">Manpower</option>
+                    </select>
+
+                    <select id="priceRangeFilter" onchange="filterItems()">
+                        <option value="" data-translate="all_prices">All Prices</option>
+                        <option value="0-500" data-translate="price_under_500">Under ₹500</option>
+                        <option value="500-1000" data-translate="price_500_1000">₹500 - ₹1000</option>
+                        <option value="1000-2000" data-translate="price_1000_2000">₹1000 - ₹2000</option>
+                        <option value="2000-5000" data-translate="price_2000_5000">₹2000 - ₹5000</option>
+                        <option value="5000+" data-translate="price_above_5000">Above ₹5000</option>
+                    </select>
+
+                    <select id="locationFilter" onchange="filterItems()">
+                        <option value="" data-translate="all_locations">All Locations</option>
+                        <option value="Bilaspur" data-translate="bilaspur">Bilaspur</option>
+                        <option value="Rampur" data-translate="rampur">Rampur</option>
+                        <option value="Barola" data-translate="barola">Barola</option>
+                        <option value="Dadri" data-translate="dadri">Dadri</option>
+                        <option value="Tigri" data-translate="tigri">Tigri</option>
+                        <option value="Jharoda" data-translate="jharoda">Jharoda</option>
+                        <option value="Bamnauli" data-translate="bamnauli">Bamnauli</option>
+                        <option value="Sultanpur" data-translate="sultanpur">Sultanpur</option>
                     </select>
 
                     <select id="sortFilter" onchange="filterItems()">
@@ -203,7 +291,17 @@
 
                 <div class="form-group">
                     <label for="itemLocation">Pickup Location *</label>
-                    <input type="text" id="itemLocation" required placeholder="Village, District">
+                    <select id="itemLocation" required>
+                        <option value="" data-translate="select_village">Select Village</option>
+                        <option value="Bilaspur" data-translate="bilaspur">Bilaspur</option>
+                        <option value="Rampur" data-translate="rampur">Rampur</option>
+                        <option value="Barola" data-translate="barola">Barola</option>
+                        <option value="Dadri" data-translate="dadri">Dadri</option>
+                        <option value="Tigri" data-translate="tigri">Tigri</option>
+                        <option value="Jharoda" data-translate="jharoda">Jharoda</option>
+                        <option value="Bamnauli" data-translate="bamnauli">Bamnauli</option>
+                        <option value="Sultanpur" data-translate="sultanpur">Sultanpur</option>
+                    </select>
                 </div>
 
                 <div class="form-group" id="availabilityDates" style="display: none;">
@@ -322,12 +420,22 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="registerVillage">Village *</label>
-                                <input type="text" id="registerVillage" required placeholder="Your village">
+                                <label for="registerVillage" data-translate="village">Village *</label>
+                                <select id="registerVillage" required onchange="updateDistrict()">
+                                    <option value="" data-translate="select_village">Select Village</option>
+                                    <option value="Bilaspur" data-translate="bilaspur">Bilaspur</option>
+                                    <option value="Rampur" data-translate="rampur">Rampur</option>
+                                    <option value="Barola" data-translate="barola">Barola</option>
+                                    <option value="Dadri" data-translate="dadri">Dadri</option>
+                                    <option value="Tigri" data-translate="tigri">Tigri</option>
+                                    <option value="Jharoda" data-translate="jharoda">Jharoda</option>
+                                    <option value="Bamnauli" data-translate="bamnauli">Bamnauli</option>
+                                    <option value="Sultanpur" data-translate="sultanpur">Sultanpur</option>
+                                </select>
                             </div>
                             <div class="form-group">
-                                <label for="registerDistrict">District *</label>
-                                <input type="text" id="registerDistrict" required placeholder="Your district">
+                                <label for="registerDistrict" data-translate="district">District *</label>
+                                <input type="text" id="registerDistrict" readonly value="Gautam Buddha Nagar" placeholder="District">
                             </div>
                         </div>
                         <div class="form-group">

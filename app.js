@@ -50,8 +50,32 @@ async function initializeApp() {
 }
 
 // Page navigation
+// Mobile Navigation Functions
+function toggleMobileMenu() {
+    const hamburger = document.getElementById('hamburger');
+    const navMenu = document.getElementById('navMenu');
+    const navOverlay = document.getElementById('navOverlay');
+    
+    hamburger.classList.toggle('active');
+    navMenu.classList.toggle('active');
+    navOverlay.classList.toggle('active');
+}
+
+function closeMobileMenu() {
+    const hamburger = document.getElementById('hamburger');
+    const navMenu = document.getElementById('navMenu');
+    const navOverlay = document.getElementById('navOverlay');
+    
+    hamburger.classList.remove('active');
+    navMenu.classList.remove('active');
+    navOverlay.classList.remove('active');
+}
+
 async function showPage(pageId) {
     try {
+        // Close mobile menu when navigating
+        closeMobileMenu();
+        
         showLoading();
         
         // Hide all pages
@@ -330,6 +354,8 @@ function getMarketplaceFilters() {
     return {
         search: document.getElementById('searchInput')?.value || '',
         category: document.getElementById('categoryFilter')?.value || '',
+        priceRange: document.getElementById('priceRangeFilter')?.value || '',
+        location: document.getElementById('locationFilter')?.value || '',
         sort: document.getElementById('sortFilter')?.value || 'newest'
     };
 }
@@ -363,6 +389,16 @@ function displayMarketplaceItems(items) {
             </div>
         </div>
     `).join('');
+}
+
+function updateDistrict() {
+    const village = document.getElementById('registerVillage').value;
+    const districtField = document.getElementById('registerDistrict');
+    if (village) {
+        districtField.value = 'Gautam Buddha Nagar';
+    } else {
+        districtField.value = '';
+    }
 }
 
 function formatPrice(item) {

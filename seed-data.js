@@ -241,6 +241,196 @@ const SEED_DATA = {
             tags: ["premium", "wholesale", "sorted"],
             created_date: "2024-12-07",
             distance: 25
+        },
+        {
+            id: "i9",
+            title: "Rotavator - 7.5 HP",
+            category: "Tools",
+            owner: "u2",
+            price_day: 800,
+            price_type: "per-day",
+            protection_required: true,
+            high_value: false,
+            images: [],
+            condition: "Good",
+            location: "Rampur",
+            description: "7.5 HP rotavator for soil preparation. Perfect for small to medium fields. Well maintained and regularly serviced.",
+            quantity: 1,
+            availability: "available",
+            tags: ["rotavator", "soil-preparation", "7.5hp"],
+            created_date: "2024-12-08",
+            distance: 8
+        },
+        {
+            id: "i10",
+            title: "Premium Basmati Rice",
+            category: "Produce",
+            owner: "u1",
+            price_qty: 60,
+            price_type: "per-kg",
+            protection_required: false,
+            high_value: false,
+            images: [],
+            condition: "Fresh",
+            location: "Barola",
+            description: "Premium quality Basmati rice from this year's harvest. Aromatic long grain rice, well dried and cleaned.",
+            quantity: 500,
+            availability: "available",
+            tags: ["basmati", "premium", "new-harvest"],
+            created_date: "2024-12-09",
+            distance: 12
+        },
+        {
+            id: "i11",
+            title: "Corn Stalks & Leaves (Animal Feed)",
+            category: "Waste",
+            owner: "u4",
+            price_qty: 5,
+            price_type: "per-kg",
+            protection_required: false,
+            high_value: false,
+            images: [],
+            condition: "Fresh",
+            location: "Dadri",
+            description: "Fresh corn stalks and leaves available for animal feed. Good quality fodder from healthy corn plants.",
+            quantity: 1000,
+            availability: "available",
+            tags: ["corn-stalks", "animal-feed", "fresh"],
+            created_date: "2024-12-10",
+            distance: 25
+        },
+        {
+            id: "i12",
+            title: "Water Pump Set - 5HP",
+            category: "Tools",
+            owner: "u2",
+            price_day: 600,
+            price_type: "per-day",
+            protection_required: true,
+            high_value: false,
+            images: [],
+            condition: "Good",
+            location: "Tigri",
+            description: "5HP electric water pump with 200ft delivery pipe. Ideal for irrigation and water transfer. Recently serviced.",
+            quantity: 1,
+            availability: "available",
+            tags: ["water-pump", "irrigation", "5hp"],
+            created_date: "2024-12-11",
+            distance: 18
+        },
+        {
+            id: "i13",
+            title: "DAP Fertilizer (50kg bag)",
+            category: "Inputs",
+            owner: "u3",
+            price_qty: 1200,
+            price_type: "per-unit",
+            protection_required: false,
+            high_value: false,
+            images: [],
+            condition: "New",
+            location: "Jharoda",
+            description: "High quality DAP fertilizer for better crop yield. 50kg bag available. Helps in root development and flowering.",
+            quantity: 20,
+            availability: "available",
+            tags: ["DAP", "fertilizer", "50kg"],
+            created_date: "2024-12-12",
+            distance: 22
+        },
+        {
+            id: "i14",
+            title: "Professional Harvesting Team",
+            category: "Manpower",
+            owner: "u1",
+            price_day: 1500,
+            price_type: "per-day",
+            protection_required: false,
+            high_value: false,
+            images: [],
+            condition: "Professional",
+            location: "Bamnauli",
+            description: "Professional harvesting team with 4 workers. Available for wheat, rice, and other crop harvesting. Own tools provided.",
+            quantity: 4,
+            availability: "available",
+            tags: ["harvesting-team", "professional", "4-workers"],
+            created_date: "2024-12-13",
+            distance: 30
+        },
+        {
+            id: "i15",
+            title: "Fresh Cauliflower",
+            category: "Produce",
+            owner: "u4",
+            price_qty: 25,
+            price_type: "per-kg",
+            protection_required: false,
+            high_value: false,
+            images: [],
+            condition: "Fresh",
+            location: "Sultanpur",
+            description: "Fresh cauliflower directly from field. Large size heads, crisp and white. Perfect for wholesale or retail.",
+            quantity: 200,
+            availability: "available",
+            tags: ["cauliflower", "fresh", "large-size"],
+            created_date: "2024-12-14",
+            distance: 35
+        },
+        {
+            id: "i16",
+            title: "Wheat Seeds (HD-2967)",
+            category: "Inputs",
+            owner: "u1",
+            price_qty: 35,
+            price_type: "per-kg",
+            protection_required: false,
+            high_value: false,
+            images: [],
+            condition: "Certified",
+            location: "Barola",
+            description: "High yielding wheat variety HD-2967. Certified seeds with 95% germination rate. Suitable for timely sowing.",
+            quantity: 100,
+            availability: "available",
+            tags: ["wheat-seeds", "HD-2967", "certified"],
+            created_date: "2024-12-15",
+            distance: 12
+        },
+        {
+            id: "i17",
+            title: "Seed Drill Machine (9-row)",
+            category: "Tools",
+            owner: "u3",
+            price_day: 1000,
+            price_type: "per-day",
+            protection_required: true,
+            high_value: true,
+            images: [],
+            condition: "Excellent",
+            location: "Rampur",
+            description: "9-row seed drill for precise seed planting. Adjustable row spacing and seed depth. Perfect for wheat and other cereals.",
+            quantity: 1,
+            availability: "available",
+            tags: ["seed-drill", "9-row", "wheat"],
+            created_date: "2024-12-16",
+            distance: 8
+        },
+        {
+            id: "i18",
+            title: "Fresh Tomatoes",
+            category: "Produce",
+            owner: "u4",
+            price_qty: 30,
+            price_type: "per-kg",
+            protection_required: false,
+            high_value: false,
+            images: [],
+            condition: "Ripe",
+            location: "Dadri",
+            description: "Fresh ripe tomatoes ready for harvest. Red, firm, and suitable for market sale. Available in large quantities.",
+            quantity: 300,
+            availability: "available",
+            tags: ["tomatoes", "ripe", "market-ready"],
+            created_date: "2024-12-17",
+            distance: 25
         }
     ],
     
@@ -394,6 +584,26 @@ class MockAPI {
         
         if (filters.availability) {
             items = items.filter(item => item.availability === filters.availability);
+        }
+        
+        // Apply price range filter
+        if (filters.priceRange) {
+            items = items.filter(item => {
+                const price = item.price_day || item.price_qty || item.price || 0;
+                if (filters.priceRange === '0-500') return price < 500;
+                if (filters.priceRange === '500-1000') return price >= 500 && price <= 1000;
+                if (filters.priceRange === '1000-2000') return price >= 1000 && price <= 2000;
+                if (filters.priceRange === '2000-5000') return price >= 2000 && price <= 5000;
+                if (filters.priceRange === '5000+') return price > 5000;
+                return true;
+            });
+        }
+        
+        // Apply location filter
+        if (filters.location) {
+            items = items.filter(item => 
+                item.location.includes(filters.location)
+            );
         }
         
         // Apply sorting
