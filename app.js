@@ -104,6 +104,21 @@ async function showPage(pageId) {
             await loadPageContent(pageId);
         }
         
+        // Show chat menu button on mobile when on chat page
+        if (pageId === 'chat') {
+            const chatMenuBtn = document.getElementById('chatMenuBtn');
+            const chatSidebar = document.getElementById('chatSidebar');
+            if (window.innerWidth <= 768 && chatMenuBtn) {
+                chatMenuBtn.style.display = 'inline-block';
+                // Always hide sidebar initially on mobile
+                if (chatSidebar) chatSidebar.classList.remove('open');
+            } else if (chatMenuBtn) {
+                chatMenuBtn.style.display = 'none';
+                // Always show sidebar on desktop
+                if (chatSidebar) chatSidebar.classList.add('open');
+            }
+        }
+        
         hideLoading();
     } catch (error) {
         console.error('Error showing page:', error);
@@ -1246,45 +1261,76 @@ async function loadChat() {
             document.getElementById('chatList').innerHTML = '<p>Please login to view messages</p>';
             return;
         }
-        
+
+        // Transaction-based chats
         const transactions = await MockAPI.getTransactions();
         const userTransactions = transactions.filter(t => 
             t.renter === currentUser.id || 
             t.owner === currentUser.id || 
             t.caretaker === currentUser.id
         );
-        
-        displayChatList(userTransactions);
-        
+
+        // --- NEW: Load direct messages as chat threads ---
+        const directMessages = JSON.parse(localStorage.getItem('directMessages') || '[]');
+        // Group direct messages by (otherUserId + itemId)
+        const directThreadsMap = {};
+        directMessages.forEach(dm => {
+            if (dm.sender === currentUser.id || dm.receiver === currentUser.id) {
+                const otherUserId = dm.sender === currentUser.id ? dm.receiver : dm.sender;
+                const threadKey = `${otherUserId}_${dm.item_id}`;
+                if (!directThreadsMap[threadKey]) {
+                    directThreadsMap[threadKey] = {
+                        userId: otherUserId,
+                        itemId: dm.item_id,
+                        lastMessage: dm,
+                        messages: []
+                    };
+                }
+                directThreadsMap[threadKey].messages.push(dm);
+                // Update lastMessage if newer
+                if (new Date(dm.timestamp) > new Date(directThreadsMap[threadKey].lastMessage.timestamp)) {
+                    directThreadsMap[threadKey].lastMessage = dm;
+                }
+            }
+        });
+        const directThreads = Object.values(directThreadsMap);
+
+        // Pass both to displayChatList
+        displayChatList(userTransactions, directThreads);
+
         if (currentTransaction) {
             await loadChatMessages(currentTransaction);
+        } else if (currentChatContact) {
+            await loadDirectMessages(currentChatContact.id, currentChatContact.itemId);
         }
-        
+
     } catch (error) {
         console.error('Error loading chat:', error);
         showError('Failed to load chat');
     }
 }
 
-function displayChatList(transactions) {
+function displayChatList(transactions, directThreads = []) {
     const container = document.getElementById('chatList');
     if (!container) return;
-    
-    if (transactions.length === 0) {
+
+    if ((transactions.length === 0) && (directThreads.length === 0)) {
         container.innerHTML = '<div class="no-chats">No conversations found</div>';
         return;
     }
-    
+
     const users = JSON.parse(localStorage.getItem('users') || '[]');
     const items = JSON.parse(localStorage.getItem('items') || '[]');
-    
-    container.innerHTML = transactions.map(transaction => {
+    let html = '';
+
+    // Transaction-based chats
+    transactions.forEach(transaction => {
         const item = items.find(i => i.id === transaction.item_id);
         const otherUser = currentUser.id === transaction.owner ? 
             users.find(u => u.id === transaction.renter) :
             users.find(u => u.id === transaction.owner);
-            
-        return `
+
+        html += `
             <div class="chat-item ${currentTransaction?.id === transaction.id ? 'active' : ''}" 
                  onclick="selectChat('${transaction.id}')">
                 <h4>${item ? item.title : 'Unknown Item'}</h4>
@@ -1292,19 +1338,50 @@ function displayChatList(transactions) {
                 <small>Transaction: ${transaction.id}</small>
             </div>
         `;
-    }).join('');
+    });
+
+    // Direct message chats
+    directThreads.forEach(thread => {
+        const otherUser = users.find(u => u.id === thread.userId);
+        const item = items.find(i => i.id === thread.itemId);
+        const isActive = currentChatContact && currentChatContact.id === thread.userId && currentChatContact.itemId === thread.itemId;
+        html += `
+            <div class="chat-item ${isActive ? 'active' : ''}" 
+                 onclick="selectDirectChat('${thread.userId}', '${thread.itemId}')">
+                <h4>${item ? item.title : 'Unknown Item'}</h4>
+                <p>${otherUser ? `<img src="${otherUser.avatar}" alt="Avatar" style="width: 20px; height: 20px; border-radius: 50%; vertical-align: middle; margin-right: 4px;"> ${otherUser.name}` : 'Unknown User'}</p>
+                <small>Direct Message</small>
+            </div>
+        `;
+    });
+
+    container.innerHTML = html;
 }
 
-async function selectChat(transactionId) {
+async function selectChat(transactionId, isTransactionChat) {
     try {
-        const transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
-        currentTransaction = transactions.find(t => t.id === transactionId);
+        if (isTransactionChat) {
+            currentTransaction = { id: transactionId };
+            await showPage('chat');
+        } else {
+            // For direct message chats, load the contact and messages
+            const directMessages = JSON.parse(localStorage.getItem('directMessages') || '[]');
+            const messageThread = directMessages.find(dm => dm.id === transactionId);
+            
+            if (messageThread) {
+                currentChatContact = {
+                    id: messageThread.sender === currentUser.id ? messageThread.receiver : messageThread.sender,
+                    itemId: messageThread.item_id
+                };
+                
+                await loadDirectMessages(currentChatContact.id, currentChatContact.itemId);
+                await showPage('chat');
+            }
+        }
         
         // Update chat list selection
         document.querySelectorAll('.chat-item').forEach(item => item.classList.remove('active'));
         event.target.classList.add('active');
-        
-        await loadChatMessages(transactionId);
         
     } catch (error) {
         console.error('Error selecting chat:', error);
@@ -1372,27 +1449,42 @@ function displayChatMessages(messages) {
 async function sendMessage() {
     const input = document.getElementById('chatInput');
     const message = input.value.trim();
-    
-    if (!message || !currentTransaction || !currentUser) return;
-    
+
+    if (!message || !currentUser) return;
+
     try {
-        // Determine receiver
-        let receiver = currentTransaction.owner;
-        if (currentUser.id === currentTransaction.owner) {
-            receiver = currentTransaction.renter;
+        // If in a transaction chat
+        if (currentTransaction && currentTransaction.id) {
+            // Determine receiver
+            let receiver = currentTransaction.owner;
+            if (currentUser.id === currentTransaction.owner) {
+                receiver = currentTransaction.renter;
+            }
+
+            await MockAPI.sendMessage({
+                transaction_id: currentTransaction.id,
+                sender: currentUser.id,
+                receiver: receiver,
+                message: message,
+                type: 'text'
+            });
+
+            input.value = '';
+            await loadChatMessages(currentTransaction.id);
         }
-        
-        await MockAPI.sendMessage({
-            transaction_id: currentTransaction.id,
-            sender: currentUser.id,
-            receiver: receiver,
-            message: message,
-            type: 'text'
-        });
-        
-        input.value = '';
-        await loadChatMessages(currentTransaction.id);
-        
+        // If in a direct message chat (from marketplace)
+        else if (currentChatContact && currentChatContact.id && currentChatContact.itemId) {
+            await MockAPI.sendDirectMessage({
+                sender: currentUser.id,
+                receiver: currentChatContact.id,
+                item_id: currentChatContact.itemId,
+                message: message,
+                type: 'text'
+            });
+
+            input.value = '';
+            await loadDirectMessages(currentChatContact.id, currentChatContact.itemId);
+        }
     } catch (error) {
         console.error('Error sending message:', error);
         showError('Failed to send message');
@@ -1473,7 +1565,14 @@ async function loadDirectMessages(ownerId, itemId) {
         if (messages && messages.length > 0) {
             displayDirectMessages(messages);
         }
-        
+
+        // --- FIX: Show chat input box for direct messages ---
+        const inputContainer = document.getElementById('chatInputContainer');
+        if (inputContainer) {
+            inputContainer.style.display = 'flex';
+        }
+        // ----------------------------------------------------
+
     } catch (error) {
         console.error('Error loading direct messages:', error);
     }
@@ -1882,6 +1981,8 @@ function showEditProfile() {
 async function handleEditProfile(event) {
     event.preventDefault();
     
+       
+    
     try {
         showLoading();
         
@@ -1950,4 +2051,74 @@ if ('serviceWorker' in navigator) {
                 console.log('ServiceWorker registration failed');
             });
     });
+}
+
+// Add this to your MockAPI definition
+MockAPI.sendDirectMessage = async function({ sender, receiver, item_id, message, type }) {
+    // Simulate delay
+    await MockAPI.delay(500);
+
+    // Get messages from localStorage
+    let messages = JSON.parse(localStorage.getItem('directMessages') || '[]');
+    const newMessage = {
+        id: 'dm' + Date.now(),
+        sender,
+        receiver,
+        item_id,
+        message,
+        type,
+        timestamp: new Date().toISOString()
+    };
+    messages.push(newMessage);
+    localStorage.setItem('directMessages', JSON.stringify(messages));
+};
+
+MockAPI.getDirectMessages = async function(user1, user2, itemId) {
+    await MockAPI.delay(200);
+    let messages = JSON.parse(localStorage.getItem('directMessages') || '[]');
+    return messages.filter(
+        m =>
+            m.item_id === itemId &&
+            (
+                (m.sender === user1 && m.receiver === user2) ||
+                (m.sender === user2 && m.receiver === user1)
+            )
+    );
+};
+// Toggle chat sidebar for mobile view
+function toggleChatSidebar() {
+    const sidebar = document.getElementById('chatSidebar');
+    if (sidebar) {
+        sidebar.classList.toggle('open');
+    }
+}
+
+// Select a direct chat thread (for direct messages)
+function selectDirectChat(userId, itemId) {
+    try {
+        const users = JSON.parse(localStorage.getItem('users') || '[]');
+        const otherUser = users.find(u => u.id === userId);
+        currentTransaction = null;
+        currentChatContact = {
+            id: userId,
+            name: otherUser ? otherUser.name : 'Unknown',
+            avatar: otherUser ? otherUser.avatar : '',
+            itemId: itemId
+        };
+        // Highlight the selected chat
+        document.querySelectorAll('.chat-item').forEach(item => item.classList.remove('active'));
+
+        // Show chat page and load messages
+        showPage('chat').then(() => {
+            loadDirectMessages(userId, itemId);
+            // Hide sidebar on mobile after selecting chat
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById('chatSidebar');
+                if (sidebar) sidebar.classList.remove('open');
+            }
+        });
+    } catch (error) {
+        console.error('Error selecting direct chat:', error);
+        showError('Failed to load chat');
+    }
 }

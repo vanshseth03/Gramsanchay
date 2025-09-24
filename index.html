@@ -14,7 +14,8 @@
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-brand">
-                                <div class="logo" style="font-size: 30px; display: inline-block; vertical-align: middle;">🌾</div>
+                <div class="logo" style="font-size: 30px; display: inline-block; vertical-align: middle;">🌾</div>
+
                 <h1>ग्रामसंचय</h1>
             </div>
             
@@ -354,14 +355,17 @@
         <!-- Chat Page -->
         <div id="page-chat" class="page">
             <div class="chat-container">
-                <div class="chat-sidebar">
-                    <h3>Conversations</h3>
+                <div class="chat-sidebar" id="chatSidebar">
+                    <button class="close-chat-sidebar" onclick="toggleChatSidebar()">×</button>
                     <div class="chat-list" id="chatList">
                         <!-- Chat list will be populated here -->
                     </div>
                 </div>
 
                 <div class="chat-main">
+                    <button class="chat-menu-btn" id="chatMenuBtn" onclick="toggleChatSidebar()" style="display: none;">
+                        ☰ Chats
+                    </button>
                     <div class="chat-header" id="chatHeader">
                         Select a conversation
                     </div>
